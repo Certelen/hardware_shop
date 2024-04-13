@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load customtags %}
+{% load cache %}
 {% block content %}
+{% cache 20 index_page %}
 <div class="main-block">
     <p class="categorys-text">Категории</p>
     {% with categorys|chunk_list:5 as chunks %}
@@ -49,5 +51,5 @@
         {% endfor %}
     </div>
 </div>
-
+{% endcache %}
 {% endblock %}

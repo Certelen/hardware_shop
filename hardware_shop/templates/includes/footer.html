@@ -1,4 +1,6 @@
 {% load static %}
+{% load cache %}
+{% cache 6000 footer %}
 <div class="footer-links">
     <div class="footer-links-block">
         <div class="logo-box">
@@ -33,3 +35,4 @@
         </div>
     </div>
 </div>
+{% endcache %}
