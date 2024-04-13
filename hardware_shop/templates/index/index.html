@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load customtags %}
+{% block content %}
+<div class="main-block">
+    <p class="categorys-text">Категории</p>
+    {% with categorys|chunk_list:5 as chunks %}
+    {% for chunk in chunks %}
+    <div class="category-row">
+        {% for category in chunk %}
+        <div class="category">
+            <a href="{% url 'products:category' category.name %}">
+                <p class="category-text">{{ category.name }}</p>
+                <img class="image" src="{{ category.image }}" />
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+    {% endwith %}
+</div>
+<div class="main-block">
+    <p class="categorys-text">Популярные товары</p>
+    <div class="popular">
+        {% for product in popular %}
+        <div class="card">
+            <div class="image">
+                <img src="{{ product.main_image }}" />
+            </div>
+            <div class="card-down">
+                <div class="card-description">
+                    <p class="popular-text">
+                        {{ product.name }}
+                    </p>
+                    <p class="price">{{ product.price }} ₽</p>
+                </div>
+                <div class="in-cart">
+                    <button onclick="myFunction()" class="button-in-cart">
+                        <p>В корзину</p>
+                    </button>
+                    <button onclick="myFunction()" class="button-favorite">
+                        <div class="card-favorite">
+                            <img class="favorite-icon" src="{% static 'media/card/not-favorite.svg' %}" />
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

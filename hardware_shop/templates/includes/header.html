@@ -1,0 +1,48 @@
+{% load static %}
+<div class="main-block">
+    <div class="up"></div>
+    <div class="down">
+        <div class="logo-box">
+            <p class="logo-text-header">Тест сайт</p>
+        </div>
+        <div class="control-panel">
+            <button class="dropdown">
+                <div onclick="CategorysFunction()" class="dropbtn">
+                    <p class="icon-text">Все категории</p>
+                    <div class="arrow-icon">
+                        <img alt="" class="vector" src="{% static 'media/header/arrow.svg' %}" />
+                    </div>
+                </div>
+                <div id="myDropdown" class="dropdown-content">
+                    {% for category in categorys %}
+                    <a href="{% url 'products:category' category.name %}">{{category.name}}</a>
+                    {% endfor %}
+                </div>
+            </button>
+            <form method="post" action="{% url 'products:search'%}">
+                {% csrf_token %}
+                <div class="input">
+                    <input class="search" name="search" required placeholder="Поиск">
+                    <input type="submit" hidden />
+                    <div class="arrow-icon">
+                        <img alt="" class="vector" src="{% static 'media/header/search.svg' %}" />
+                    </div>
+                </div>
+            </form>
+            <div class="icons-block">
+                <a href="{% url 'user:profile'%}" class="icon-block">
+                    <img alt="" class="icon" src="{% static 'media/header/profile.svg' %}" />
+                    <p class="icon-text">Профиль</p>
+                </a>
+                <a href="{% url 'user:orders'%}" class="icon-block">
+                    <img alt="" class="icon" src="{% static 'media/header/old_orders.svg' %}" />
+                    <p class="icon-text">Заказы</p>
+                </a>
+                <a href="{% url 'user:cart'%}" class="icon-block">
+                    <img alt="" class="icon" src="{% static 'media/header/now_order.svg' %}" />
+                    <p class="icon-text">Корзина</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

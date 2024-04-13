@@ -1,0 +1,35 @@
+{% load static %}
+<div class="footer-links">
+    <div class="footer-links-block">
+        <div class="logo-box">
+            <p class="logo-text-footer">Тест сайт</p>
+        </div>
+        <div class="footer-link">
+            <img class="icon" src="{% static 'media/footer/mail.svg' %}" />
+            <a href="{% url 'about'%}#mail">Почта</a>
+        </div>
+        <div class="footer-link">
+            <img class="icon" src="{% static 'media/footer/address.svg' %}" />
+            <a href="{% url 'about'%}#address">Адрес</a>
+        </div>
+    </div>
+    <div class="footer-links-block">
+        <div class="footer-link">
+            <a href="{% url 'user:profile'%}">Личный кабинет</a>
+        </div>
+        <div class="footer-link">
+            <a href="{% url 'user:cart'%}">Корзина</a>
+        </div>
+        <div class="footer-link">
+            <a href="{% url 'user:orders'%}">Заказы</a>
+        </div>
+        <div class="footer-link">
+            <a href="{% url 'user:favorite'%}">Избранное</a>
+        </div>
+    </div>
+    <div class="footer-links-block">
+        <div class="footer-link">
+            <a href="{% url 'about'%}">Контакты</a>
+        </div>
+    </div>
+</div>
