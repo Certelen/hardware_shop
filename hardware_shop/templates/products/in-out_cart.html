@@ -1,0 +1,17 @@
+{% load static %}
+<form class="form-in-cart" name="in-cart" action="{% url 'products:change_cart'%}">
+    {% csrf_token %}
+    {% if product.id in now_order %}
+    <button type="submit" class="button-in-cart" name="cart">
+        <p>В корзине</p>
+    </button>
+    <input type="text" name="in_cart" value="True" hidden>
+    {% else %}
+    <button type="submit" class="button-in-cart" name="cart">
+        <p>В корзину</p>
+    </button>
+    <input type="text" name="in_cart" value="False" hidden>
+    {% endif %}
+    <input type="text" name="product" value="{{ product.id }}" hidden>
+    <input type="text" name="authenticated" value="{{ user.is_authenticated }}" hidden>
+</form>

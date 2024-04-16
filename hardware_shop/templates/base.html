@@ -6,6 +6,16 @@
 </head>
 
 <body>
+    <div id="blackout" class="blackout">
+    </div>
+    <div id="window_form" class="window">
+        {% if user.is_authenticated %}
+        {% include 'user/profile.html' %}
+        {% else %}
+        {% include 'auth/login.html' %}
+        {% include 'auth/signup.html' %}
+        {% endif %}
+    </div>
     <header>
         {% include 'includes/header.html' %}
     </header>

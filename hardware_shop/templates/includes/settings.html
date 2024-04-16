@@ -1,21 +1,41 @@
 {% load static %}
-{% load cache %}
-{% cache 6000 settings %}
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wordly</title>
 <link rel="stylesheet" href="{% static 'style.css' %}">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
-    function CategorysFunction() {
-        document.getElementById("myDropdown").classList.toggle("show");
-    }
+    // Добавление и удаление show выбранных элемент-id
+    $(document).ready(function () {
+        $('.dropdown').click(function () {
+            document.getElementById("myDropdown").classList.toggle("show");
+        });
+    });
+    $(function () {
+        $('#profile, #profile-link').click(function () {
+            document.getElementById("blackout").classList.toggle("show");
+            document.getElementById("window_form").classList.toggle("show");
+            $('#' + $(this).attr('name')).addClass("show");
+            return false;
+        })
+    });
 </script>
 <script>
+    // Клик по черному фону выходит из профиля/авторизации
     $(document).ready(function () {
+        $('#blackout').click(function () {
+            document.getElementById("window_form").classList.toggle("show")
+            document.getElementById("blackout").classList.toggle("show")
+        });
+    });
+</script>
+<script>
+    // Нажатие enter подтверждает форму поиска
+    $(function () {
         $('.search').keydown(function (event) {
             if (event.keyCode == 13) {
                 this.form.submit();
@@ -25,4 +45,87 @@
 
     });
 </script>
-{% endcache %}
+
+<script>
+    // Передача данных на сервер
+    $(document).on("submit", "#button-form-login, #button-form-signup, #button-form-profile", function () {
+        var name = $(this).attr('name')
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            success: function (html) {
+                if (html['login']) {
+                    location.reload(true)
+                } else {
+                    if (html['update']) {
+                        toastr.success("Данные сохранены")
+                    } else {
+                        $('#button-form-' + name).remove()
+                        $('#window_form').append(html)
+                        $('#button-form-' + name).addClass("show");
+                    }
+                }
+            }
+        });
+        return false;
+    });
+</script>
+
+{% if user.is_authenticated %}
+<script>
+    // Клик авторизованного по корзине/избранному
+    $(document).on("submit", ".form-in-cart, .form-favorite", function () {
+        var name = $(this).attr('name')
+        var form = $(this)
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            success: function (html) {
+                form.replaceWith(html)
+            }
+        });
+        return false;
+    });
+    $(function () {
+        $('#orders, #cart').click(function () {
+            if ($(this).attr("user") == 'False') {
+                toastr.error("Войдите или зарегистрируйтесь!")
+                return false
+            }
+        });
+    });
+</script>
+{% else %}
+<script>
+    // Клик неавторизованного по корзине/избранному/заказам выдает сообщение
+    $(document).ready(function () {
+        $('.form-in-cart,\
+            .form-favorite').submit(function () {
+            var form_data = $(this).serialize();
+            if (form_data.split('&').pop() == 'authenticated=False') {
+                toastr.error("Войдите или зарегистрируйтесь!")
+                return false
+            } else {
+            }
+        });
+    });
+    $(function () {
+        $('#orders, #cart').click(function () {
+            if ($(this).attr("user") == 'False') {
+                toastr.error("Войдите или зарегистрируйтесь!")
+                return false
+            }
+        });
+    });
+</script>
+<script>
+    //Нажатие Регистрация в форме логина и Логин в форме регистрации меняет форму
+    $(document).on("click", ".button-switch", function () {
+        document.getElementById("button-form-login").classList.toggle("show");
+        document.getElementById("button-form-signup").classList.toggle("show");
+        return false
+    });
+</script>
+{% endif %}

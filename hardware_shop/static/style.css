@@ -3,6 +3,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 0;
 }
 
 button {
@@ -13,7 +14,8 @@ button {
 }
 
 p,
-.footer-link a {
+.footer-link a,
+.form-error {
     font-family: 'Noto Sans', sans-serif;
     font-weight: 600;
 }
@@ -23,6 +25,138 @@ a {
     font-weight: 100;
     margin: 0;
     text-decoration: none;
+}
+
+.blackout {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 101;
+    background: black;
+    opacity: .7;
+}
+
+.window {
+    display: none;
+    position: absolute;
+    width: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    z-index: 102;
+}
+
+.login-block {
+    display: none;
+    padding: 36px;
+    text-align: center;
+    width: 304px;
+}
+
+.enter_text {
+    padding: 0;
+    margin: 0;
+    font-size: 39px;
+    margin-bottom: 24px;
+}
+
+.profile-input-block {
+    text-align: start;
+    font-weight: 100;
+    font-size: 18px;
+    margin: 0;
+    margin-bottom: 8px;
+}
+
+.profile-input {
+    background-color: rgb(246 246 246);
+    border-bottom: 1px solid #cfcfcf;
+    width: 100%;
+    height: 47px;
+    padding: 0 16px;
+    margin-bottom: 11px;
+}
+
+.profile-input:last-child {
+    margin-bottom: 24px;
+}
+
+.forget_password_text {
+    text-align: start;
+    font-weight: 100;
+    color: gray;
+    margin: 0;
+    margin-bottom: 24px;
+}
+
+.button-login,
+.button-switch,
+.button-signup,
+.button-profile {
+    background-color: rgba(252, 236, 65, 1);
+    width: 100%;
+    font-size: 15px;
+    height: 46px;
+    justify-content: center;
+}
+
+.button-login p,
+.button-switch p,
+.button-signup p,
+.button-profile p {
+    font-size: 18px;
+    font-weight: 100;
+    margin: 0;
+}
+
+.button-switch {
+    background-color: white;
+    margin-top: 12px;
+}
+
+.signup-block {
+    display: none;
+    padding: 36px;
+    justify-content: center;
+    width: 500px;
+}
+
+.signup-row {
+    display: flex;
+    justify-content: center;
+}
+
+.left-block {
+    margin-right: 8px;
+    width: 100%;
+}
+
+.right-block {
+    margin-left: 8px;
+    width: 100%;
+}
+
+.profile-block {
+    padding: 0;
+    width: 768px;
+    height: auto;
+    text-align: start;
+}
+
+.profile-info-block {
+    border-top: 1px solid #cfcfcf;
+    padding: 36px;
+    margin-top: 40px;
+}
+
+.profile-info-row {
+    display: flex;
+}
+
+.profile-info-row p {
+    font-weight: 100;
 }
 
 .main-block {
@@ -317,6 +451,14 @@ input::placeholder {
     height: 48px;
 }
 
+.form-in-cart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    align-self: stretch;
+}
+
 .button-in-cart {
     background-color: rgba(252, 236, 65, 1);
     margin-right: 5px;
@@ -329,6 +471,14 @@ input::placeholder {
 }
 
 /*favorite button*/
+.form-favorite {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 48px;
+    align-self: stretch;
+}
+
 .button-favorite {
     background-color: rgba(252, 236, 65, 1);
     display: flex;

@@ -15,7 +15,7 @@ class Category(models.Model):
     )
     image = models.ImageField(
         'Изображение категории',
-        upload_to='categorys/',
+        upload_to='categorys_img/',
         help_text='Изображение категории',
     )
 
@@ -39,7 +39,7 @@ class Product(models.Model):
     )
     main_image = models.ImageField(
         'Изображение товара в превью',
-        upload_to='products/',
+        upload_to='products_img/',
         help_text='Изображение товара в превью',
     )
     characteristic = models.TextField(
@@ -128,7 +128,7 @@ class ProductImage(models.Model):
     )
     image = models.ImageField(
         'Изображение товара',
-        upload_to='products/',
+        upload_to='products_img/',
         help_text='Загрузка картинки'
     )
 

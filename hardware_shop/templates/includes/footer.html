@@ -1,22 +1,20 @@
 {% load static %}
-{% load cache %}
-{% cache 6000 footer %}
 <div class="footer-links">
     <div class="footer-links-block">
         <div class="logo-box">
             <p class="logo-text-footer">Тест сайт</p>
         </div>
         <div class="footer-link">
-            <img class="icon" src="{% static 'media/footer/mail.svg' %}" />
+            <img class="icon" src="{% static 'footer/mail.svg' %}" />
             <a href="{% url 'about'%}#mail">Почта</a>
         </div>
         <div class="footer-link">
-            <img class="icon" src="{% static 'media/footer/address.svg' %}" />
+            <img class="icon" src="{% static 'footer/address.svg' %}" />
             <a href="{% url 'about'%}#address">Адрес</a>
         </div>
     </div>
     <div class="footer-links-block">
-        <div class="footer-link">
+        <div id="profile-link" class="footer-link">
             <a href="{% url 'user:profile'%}">Личный кабинет</a>
         </div>
         <div class="footer-link">
@@ -35,4 +33,3 @@
         </div>
     </div>
 </div>
-{% endcache %}

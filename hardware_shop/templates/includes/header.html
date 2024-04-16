@@ -7,10 +7,10 @@
         </div>
         <div class="control-panel">
             <button class="dropdown">
-                <div onclick="CategorysFunction()" class="dropbtn">
+                <div class="dropbtn">
                     <p class="icon-text">Все категории</p>
                     <div class="arrow-icon">
-                        <img alt="" class="vector" src="{% static 'media/header/arrow.svg' %}" />
+                        <img alt="" class="vector" src="{% static 'header/arrow.svg' %}" />
                     </div>
                 </div>
                 <div id="myDropdown" class="dropdown-content">
@@ -22,24 +22,31 @@
             <form method="post" action="{% url 'products:search'%}">
                 {% csrf_token %}
                 <div class="input">
-                    <input class="search" name="search" required placeholder="Поиск">
+                    <input type="text" class="search" name="search_product" required placeholder="Поиск">
                     <input type="submit" hidden />
                     <div class="arrow-icon">
-                        <img alt="" class="vector" src="{% static 'media/header/search.svg' %}" />
+                        <img alt="" class="vector" src="{% static 'header/search.svg' %}" />
                     </div>
                 </div>
             </form>
             <div class="icons-block">
-                <a href="{% url 'user:profile'%}" class="icon-block">
-                    <img alt="" class="icon" src="{% static 'media/header/profile.svg' %}" />
+                {% if user.is_authenticated %}
+                <a id="profile" href="{% url 'user:profile'%}" class="icon-block">
+                    <img alt="" class="icon" src="{% static 'header/profile.svg' %}" />
                     <p class="icon-text">Профиль</p>
                 </a>
-                <a href="{% url 'user:orders'%}" class="icon-block">
-                    <img alt="" class="icon" src="{% static 'media/header/old_orders.svg' %}" />
+                {% else %}
+                <a id="profile" href="{% url 'user:login'%}" class="icon-block" name="button-form-login">
+                    <img alt="" class="icon" src="{% static 'header/profile.svg' %}" />
+                    <p class="icon-text">Вход</p>
+                </a>
+                {% endif %}
+                <a id="orders" href="{% url 'user:orders'%}" class="icon-block" user="{{ user.is_authenticated}}">
+                    <img alt="" class="icon" src="{% static 'header/old_orders.svg' %}" />
                     <p class="icon-text">Заказы</p>
                 </a>
-                <a href="{% url 'user:cart'%}" class="icon-block">
-                    <img alt="" class="icon" src="{% static 'media/header/now_order.svg' %}" />
+                <a id="cart" href="{% url 'user:cart'%}" class="icon-block" user="{{ user.is_authenticated}}">
+                    <img alt="" class="icon" src="{% static 'header/now_order.svg' %}" />
                     <p class="icon-text">Корзина</p>
                 </a>
             </div>

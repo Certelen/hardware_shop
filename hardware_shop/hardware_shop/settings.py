@@ -15,6 +15,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'products',
     'users',
+    'sorl.thumbnail',
+]
+
+MIDDLEWARE_CLASSES = [
+    "account.middleware.LocaleMiddleware",
+    "account.middleware.TimezoneMiddleware",
 ]
 
 MIDDLEWARE = [
@@ -29,14 +35,15 @@ MIDDLEWARE = [
 
 AUTH_USER_MODEL = 'users.CustomUser'
 ROOT_URLCONF = 'hardware_shop.urls'
-TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
+THUMBNAIL_COLORSPACE = None
+THUMBNAIL_PRESERVE_FORMAT = True
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATES_DIR],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -82,7 +89,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
-
 MEDIA_ROOT = 'media/'
 MEDIA_ROOT = os.path.join(STATICFILES_DIRS[0], 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTHENTICATION_BACKENDS = ['hardware_shop.auth_module.EmailBackend']

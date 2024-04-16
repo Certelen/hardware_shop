@@ -2,8 +2,9 @@
 migrations
 tests.py
 tests
-categorys
-products
+categorys_img
+products_img
+cache
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

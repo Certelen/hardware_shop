@@ -1,0 +1,65 @@
+<form id="button-form-profile" class="profile-block" name="profile" method="post" action="{% url 'user:profile'%}">
+    {% csrf_token %}
+    <p class="enter_text">Личный кабинет</p>
+    <div class="profile-info-block">
+        <div>
+            <div class="profile-info-row">
+                <p class="enter_text">Личная информация</p>
+            </div>
+            <div class="form-error">
+                {{ profile_form.non_field_errors }}
+            </div>
+            <div class="profile-info-row">
+                <div class="left-block">
+                    <p class="profile-input-block">Имя</p>
+                    <input type="text" class="profile-input" name="first_name" placeholder="Богдан"
+                        value="{{ user.first_name }}">
+                </div>
+                <div class="right-block">
+                    <p class="profile-input-block">Фамилия</p>
+                    <input type="text" class="profile-input" name="last_name" placeholder="Порникин"
+                        value="{{ user.last_name }}">
+                </div>
+            </div>
+            <div class="profile-info-row">
+                <div class="left-block">
+                    <p class="profile-input-block">Дата рождения</p>
+                    <input type="date" class="profile-input" name="birth_date" placeholder="24.05.1989"
+                        value="{{ user.birth_date }}">
+                </div>
+                <div class="right-block">
+                    <p class="profile-input-block">Телефон</p>
+                    <input type="tel" class="profile-input" name="phone" placeholder="+7(359)90-38-98"
+                        value="{{ user.phone }}">
+                </div>
+            </div>
+            <div class="profile-info-row">
+                <div class="left-block">
+                    <p class="profile-input-block">Ник</p>
+                    <input type="username" class="profile-input" name="username" required placeholder="user"
+                        value="{{ user.username }}">
+                </div>
+                <div class="right-block">
+                    <p class="profile-input-block">E-mail</p>
+                    <input type="email" class="profile-input" name="email" required placeholder="youmail@mail.com"
+                        value="{{ user.email }}">
+                </div>
+            </div>
+            <div class="profile-info-row">
+                <div class="left-block">
+                    <p class="profile-input-block">Новый пароль</p>
+                    <input type="password" class="profile-input" name="password1" placeholder="****************">
+                </div>
+                <div class="right-block">
+                    <p class="profile-input-block">Подтверждение пароля</p>
+                    <input type="password" class="profile-input" name="password2" placeholder="****************">
+                </div>
+            </div>
+        </div>
+        <div>
+            <button type="submit" class="button-profile">
+                <p>Сохранить</p>
+            </button>
+        </div>
+    </div>
+</form>

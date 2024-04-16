@@ -1,0 +1,21 @@
+{% load static %}
+<form class="form-favorite" name="favorite" action="{% url 'products:change_favorite'%}">
+    {% csrf_token %}
+    {% if product.id in favorite_products %}
+    <button type="submit" class="button-favorite" name="favorite">
+        <div class="card-favorite">
+            <img class="favorite-icon" src="{% static 'card/favorite.svg' %}" />
+        </div>
+    </button>
+    <input type="text" name="favorite" value="True" hidden>
+    {% else %}
+    <button type="submit" class="button-favorite" name="favorite">
+        <div class="card-favorite">
+            <img class="favorite-icon" src="{% static 'card/not-favorite.svg' %}" />
+        </div>
+    </button>
+    <input type="text" name="favorite" value="False" hidden>
+    {% endif %}
+    <input type="text" name="product" value="{{ product.id }}" hidden>
+    <input type="text" name="authenticated" value="{{ user.is_authenticated }}" hidden>
+</form>

@@ -1,0 +1,42 @@
+<form id="button-form-signup" class="signup-block" method="post" name="signup" action="{% url 'user:signup'%}">
+  {% csrf_token %}
+  <p class="enter_text">Регистрация</p>
+  <div id="form-error-signup" class="form-error">
+    {{ signup_form.non_field_errors }}
+    {% for field in signup_form %}
+    {{ field.errors }}
+    {% endfor %}
+  </div>
+  <div>
+    <div>
+      <div class="signup-row">
+        <div class="left-block">
+          <p class="profile-input-block">Никнейм</p>
+          <input type="text" class="profile-input" name="username" required placeholder="user">
+        </div>
+        <div class="right-block">
+          <p class="profile-input-block">E-mail</p>
+          <input type="text" class="profile-input" name="email" required placeholder="youmail@mail.com">
+        </div>
+      </div>
+      <div class="signup-row">
+        <div class="left-block">
+          <p class="profile-input-block">Новый пароль</p>
+          <input type="password" class="profile-input" name="password1" required placeholder="****************">
+        </div>
+        <div class="right-block">
+          <p class="profile-input-block">Подтверждение пароля</p>
+          <input type="password" class="profile-input" name="password2" required placeholder="****************">
+        </div>
+      </div>
+    </div>
+    <div>
+      <button type="submit" class="button-signup">
+        <p>Зарегистрироваться</p>
+      </button>
+      <button class="button-switch" name="login">
+        <p>Войти</p>
+      </button>
+    </div>
+  </div>
+</form>

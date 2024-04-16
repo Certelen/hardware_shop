@@ -1,0 +1,27 @@
+<form id="button-form-login" class="login-block" name="login" method="post" action="{% url 'user:login'%}">
+    {% csrf_token %}
+    <p class="enter_text">Вход</p>
+    <div id="form-error-login" class="form-error">
+        {{ login_form.non_field_errors }}
+        {% for field in login_form %}
+        {{ field.errors }}
+        {% endfor %}
+    </div>
+    <div>
+        <p class="profile-input-block">E-mail</p>
+        <input type="text" class="profile-input" name="username" required placeholder="youmail@mail.com">
+    </div>
+    <div>
+        <p class="profile-input-block">Пароль</p>
+        <input type="password" class="profile-input" name="password" required placeholder="****************">
+        <p class="forget_password_text">Забыли пароль?</p>
+    </div>
+    <div>
+        <button type="submit" class="button-login">
+            <p>Войти</p>
+        </button>
+        <button class="button-switch" name="signup">
+            <p>Создать учетную запись</p>
+        </button>
+    </div>
+</form>
