@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load customtags %}
+{% load thumbnail %}
+{% block content %}
+<div class="main-block">
+    <p class="enter_text">Избранное</p>
+</div>
+<div class="main-block" style="align-items: center;">
+    <div>
+        <div class="icons-block">
+            <a class="{% if now_sort == 'popular' %}active-filter{% else %}in-active-filter{% endif %}" name="popular"
+                href="{% url 'user:sort' 'popular' %}">
+                <p>Популярные</p>
+            </a>
+            <a class="{% if now_sort == 'min_price' %}active-filter{% else %}in-active-filter{% endif %}"
+                name="min_price" href="{% url 'user:sort' 'min_price' %}">
+                <p>Дешевле</p>
+            </a>
+            <a class="{% if now_sort == 'max_price' %}active-filter{% else %}in-active-filter{% endif %}"
+                name="max_price" href="{% url 'user:sort' 'max_price' %}">
+                <p>Дороже</p>
+            </a>
+            <a class="{% if now_sort == 'alphabet' %}active-filter{% else %}in-active-filter{% endif %}" name="alphabet"
+                href="{% url 'user:sort' 'alphabet' %}">
+                <p>По алфавиту</p>
+            </a>
+        </div>
+        {% for row in page_obj %}
+        <div class="row">
+            {% for product in row %}
+            <div class="card">
+                <a class="image" href="{% url 'products:product' product.id %}">
+                    {% thumbnail product.main_image "278x208" crop="center" upscale=True as product_image %}
+                    <img src="{{ product_image.url }}" />
+                    {% endthumbnail %}
+                </a>
+                <div class="card-down">
+                    <div class="card-description">
+                        <p class="popular-text">
+                            {{ product.name }}
+                        </p>
+                        <p class="price">{{ product.price }} ₽</p>
+                    </div>
+                    <div class="in-cart">
+                        {% include 'products/in-out_cart.html' %}
+                        {% include 'products/in-out_favorite.html' %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+        {% include 'includes/paginator.html' %}
+    </div>
+</div>
+{% endblock %}

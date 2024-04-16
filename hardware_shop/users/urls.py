@@ -15,7 +15,10 @@ urlpatterns = [
         'cart', views.cart, name='cart'
     ),
     path(
-        'favorite', views.favorite, name='favorite'
+        'favorite/<str:sort>', views.favorite, name='sort'
+    ),
+    path(
+        'favorite/', views.favorite, name='favorite'
     ),
 ]
 

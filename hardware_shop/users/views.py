@@ -16,6 +16,7 @@ from django.http import JsonResponse
 
 from .forms import CreationForm, UpdateUserForm
 from .models import CustomUser
+from products.views import paginator, context_forms
 
 
 def signup(request):
@@ -75,9 +76,42 @@ def orders(request):
 
 @login_required
 def cart(request):
-    pass
+    user = request.user
+    cart = user.order.filter(close=False)[0].product_order.all()
+    final_amount = sum([obj.quantity for obj in cart])
+    final_price = sum([obj.product.price*obj.quantity for obj in cart])
+    if request.POST:
+        raise ValueError(request.POST)
+    context = {
+        'cart': cart,
+        'final_price': final_price,
+        'final_amount': final_amount
+    }
+    return render(request, 'user/cart.html', context)
 
 
 @login_required
-def favorite(request):
-    pass
+def favorite(request, sort='popular'):
+    user = request.user
+    favorite_products = user.favorite_products.all()
+    if sort == 'popular':
+        favorite_products = favorite_products.order_by('score')
+    elif sort == 'alphabet':
+        favorite_products = favorite_products.order_by('name')
+    elif sort == 'min_price':
+        favorite_products = favorite_products.order_by('price')
+    elif sort == 'max_price':
+        favorite_products = favorite_products.order_by('price').reverse()
+    page_obj = paginator(
+        request,
+        [favorite_products[i:i+3] for i in range(0, len(favorite_products), 3)]
+    )
+    context = {
+        'now_sort': sort,
+        'page_obj': page_obj
+    }
+    context = dict(
+        list(context.items()) +
+        list(context_forms(request).items())
+    )
+    return render(request, 'user/favorite.html', context)

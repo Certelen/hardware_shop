@@ -1,0 +1,32 @@
+{% load static %}
+{% if page_obj.has_other_pages %}
+<nav aria-label="Page navigation" class="paginator-pages">
+  {% if page_obj.has_previous %}
+  <a class="page-item" href="?page={{ page_obj.previous_page_number }}">
+    <img class="icon" src="{% static 'pagination/arrow_left.svg' %}" />
+  </a>
+  <a class="page-item" href="?page=1">
+    <p>...</p>
+  </a>
+  {% endif %}
+  {% for i in page_obj.paginator.page_range %}
+  {% if page_obj.number == i %}
+  <div class="page-item active">
+    <p>{{ i }}</p>
+  </div>
+  {% else %}
+  <a class="page-item" href="?page={{ i }}">
+    <p>{{ i }}</p>
+  </a>
+  {% endif %}
+  {% endfor %}
+  {% if page_obj.has_next %}
+  <a class="page-item" href="?page={{ page_obj.paginator.num_pages }}">
+    <p>...</p>
+  </a>
+  <a class="page-item" href="?page={{ page_obj.next_page_number }}">
+    <img class="icon" src="{% static 'pagination/arrow_right.svg' %}" />
+  </a>
+  {% endif %}
+</nav>
+{% endif %}

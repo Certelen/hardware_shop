@@ -15,7 +15,7 @@
                 </div>
                 <div id="myDropdown" class="dropdown-content">
                     {% for category in categorys %}
-                    <a href="{% url 'products:category' category.name %}">{{category.name}}</a>
+                    <a href="{% url 'products:category' category.id %}">{{category.name}}</a>
                     {% endfor %}
                 </div>
             </button>
@@ -33,21 +33,21 @@
                 {% if user.is_authenticated %}
                 <a id="profile" href="{% url 'user:profile'%}" class="icon-block">
                     <img alt="" class="icon" src="{% static 'header/profile.svg' %}" />
-                    <p class="icon-text">Профиль</p>
+                    <p class="icon-text-header">Профиль</p>
                 </a>
                 {% else %}
                 <a id="profile" href="{% url 'user:login'%}" class="icon-block" name="button-form-login">
                     <img alt="" class="icon" src="{% static 'header/profile.svg' %}" />
-                    <p class="icon-text">Вход</p>
+                    <p class="icon-text-header">Вход</p>
                 </a>
                 {% endif %}
                 <a id="orders" href="{% url 'user:orders'%}" class="icon-block" user="{{ user.is_authenticated}}">
                     <img alt="" class="icon" src="{% static 'header/old_orders.svg' %}" />
-                    <p class="icon-text">Заказы</p>
+                    <p class="icon-text-header">Заказы</p>
                 </a>
                 <a id="cart" href="{% url 'user:cart'%}" class="icon-block" user="{{ user.is_authenticated}}">
                     <img alt="" class="icon" src="{% static 'header/now_order.svg' %}" />
-                    <p class="icon-text">Корзина</p>
+                    <p class="icon-text-header">Корзина</p>
                 </a>
             </div>
         </div>

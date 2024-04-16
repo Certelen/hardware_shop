@@ -3,7 +3,6 @@
 {% load customtags %}
 {% load thumbnail %}
 {% block content %}
-
 <div class="main-block">
     <p class="categorys-text">Категории</p>
     {% with categorys|chunk_list:5 as chunks %}
@@ -11,7 +10,7 @@
     <div class="category-row">
         {% for category in chunk %}
         <div class="category">
-            <a href="{% url 'products:category' category.name %}">
+            <a href="{% url 'products:category' category.id %}">
                 <p class="category-text">{{ category.name }}</p>
                 {% thumbnail category.image "180x128" crop="center" upscale=True as category_image %}
                 <img class="image" src="{{ category_image.url }}" />

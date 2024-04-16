@@ -18,9 +18,14 @@ urlpatterns = [
         'change_favorite', views.change_favorite, name='change_favorite'
     ),
     path(
-        'category/<str:category_name>/', views.category, name='category'
+        'category/<int:category_id>/<str:sort>/<str:filter_str>',
+        views.category,
+        name='sort'
     ),
     path(
-        'product/<str:product_id>/', views.product_detail, name='product'
+        'category/<int:category_id>/', views.category, name='category'
+    ),
+    path(
+        'product/<int:product_id>/', views.product_detail, name='product'
     ),
 ]

@@ -93,3 +93,5 @@ MEDIA_ROOT = 'media/'
 MEDIA_ROOT = os.path.join(STATICFILES_DIRS[0], 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTHENTICATION_BACKENDS = ['hardware_shop.auth_module.EmailBackend']
+
+MAX_ROW_ON_PAGE = 6
