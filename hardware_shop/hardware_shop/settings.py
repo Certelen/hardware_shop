@@ -1,4 +1,5 @@
 from pathlib import Path
+from django.urls import reverse_lazy
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -95,3 +96,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTHENTICATION_BACKENDS = ['hardware_shop.auth_module.EmailBackend']
 
 MAX_ROW_ON_PAGE = 6
+
+LOGIN_URL = 'products:index'
