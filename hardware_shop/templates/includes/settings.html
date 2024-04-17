@@ -2,7 +2,7 @@
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wordly</title>
+<title>Строительный магазин "Тест сайт"</title>
 <link rel="stylesheet" href="{% static 'style.css' %}">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -28,8 +28,9 @@
     // Клик по черному фону выходит из профиля/авторизации
     $(document).ready(function () {
         $('#blackout').click(function () {
-            document.getElementById("window_form").classList.toggle("show")
-            document.getElementById("blackout").classList.toggle("show")
+            $("#window_form").removeClass("show");
+            $("#blackout").removeClass("show");
+            $(".success-order").removeClass("show");
         });
     });
 </script>
@@ -99,14 +100,11 @@
 {% else %}
 <script>
     // Клик неавторизованного по корзине/избранному/заказам выдает сообщение
-    $(document).ready(function () {
-        $('.form-in-cart,\
-            .form-favorite').submit(function () {
-            var form_data = $(this).serialize();
-            if (form_data.split('&').pop() == 'authenticated=False') {
+    $(function () {
+        $('.button-in-cart, .button-favorite').click(function () {
+            if ('{{ user.is_authenticated }}' == 'False') {
                 toastr.error("Войдите или зарегистрируйтесь!")
                 return false
-            } else {
             }
         });
     });

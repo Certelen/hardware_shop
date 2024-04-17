@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, Product, ProductImage, Review
+from .models import Category, Product, ProductImage
 
 
 @admin.register(Category)
@@ -16,8 +16,3 @@ class ProductImageInline(admin.TabularInline):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductImageInline]
-
-
-@admin.register(Review)
-class ReviewAdmin(admin.ModelAdmin):
-    pass

@@ -12,6 +12,9 @@ urlpatterns = [
         'search', views.search, name='search'
     ),
     path(
+        'search/<str:sort>', views.search, name='search_sort'
+    ),
+    path(
         'change_cart', views.change_cart, name='change_cart'
     ),
     path(
@@ -28,4 +31,5 @@ urlpatterns = [
     path(
         'product/<int:product_id>/', views.product_detail, name='product'
     ),
+
 ]

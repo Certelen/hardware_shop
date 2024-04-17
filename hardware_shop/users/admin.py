@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CustomUser, Order, ProductOrder
+from .models import CustomUser, Order, ProductOrder, Review
 
 
 @admin.register(CustomUser)
@@ -16,3 +16,8 @@ class ProductOrderInline(admin.TabularInline):
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     inlines = [ProductOrderInline]
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    pass

@@ -4,9 +4,10 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.http import JsonResponse
+from http import HTTPStatus
 
 
-from users.models import ProductOrder
+from users.models import ProductOrder, Review
 from .models import Category, Product
 from .forms import SearchForm
 from hardware_shop.settings import MAX_ROW_ON_PAGE
@@ -21,33 +22,38 @@ def paginator(request, row_list):
 
 def context_forms(request, now_order=None):
     form = SearchForm()
+    context_auth = {}
     if request.user.is_authenticated:
         now_order = request.user.order.filter(close=False)[0]
         now_order = now_order.product_order.all()
         now_order = now_order.values_list('product', flat=True)
         favorite_products = request.user.favorite_products.all()
         favorite_products = favorite_products.values_list(flat=True)
-    return {
+        context_auth = {
+            'now_order': now_order,
+            'favorite_products': favorite_products
+        }
+    context = {
         'search_form': form,
-        'now_order': now_order,
-        'favorite_products': favorite_products,
         'categorys': Category.objects.all()
     }
+    context = dict(
+        list(context.items()) +
+        list(context_auth.items())
+    )
+    return context
 
 
 def index(request, now_order=None):
     context = {
         'categorys': Category.objects.all(),
-        'popular': Product.objects.all()[:5]
+        'popular': Product.objects.all().order_by('score')[:5]
     }
-    context = dict(
-        list(context.items()) +
-        list(context_forms(request).items())
-    )
+
     return render(request, 'index/index.html', context)
 
 
-def search(request):
+def search(request, sort='popular'):
     form = SearchForm()
     if request.method == 'POST':
         form = SearchForm(data=request.POST)
@@ -56,27 +62,48 @@ def search(request):
             form_input = form_input.get('search_product')
             search_return = Product.objects.filter(
                 Q(name__contains=form_input))
-    context = {
-        'categorys': Category.objects.all(),
-        'products': search_return
-    }
-    raise ValueError(context)
+        if sort == 'popular':
+            search_return = search_return.order_by('score')
+        elif sort == 'alphabet':
+            search_return = search_return.order_by('name')
+        elif sort == 'min_price':
+            search_return = search_return.order_by('price')
+        elif sort == 'max_price':
+            search_return = search_return.order_by('price').reverse()
+        page_obj = paginator(
+            request,
+            [search_return[i:i+3] for i in range(0, len(search_return), 3)]
+        )
+        context = {
+            'products': search_return,
+            'page_obj': page_obj,
+            'search_word': request.POST['search_product'],
+            'now_sort': sort,
+        }
+    context = dict(
+        list(context.items()) +
+        list(context_forms(request).items())
+    )
+    return render(request, 'products/search.html', context)
 
 
 def product_detail(request, product_id, quantity=1):
     product = get_object_or_404(Product, id=product_id)
     images = [product.main_image]
     images += [obj.image for obj in product.images.all()]
-    order = request.user.order.filter(close=False)
-    if order:
-        product_order = ProductOrder.objects.filter(
-            order=order[0], product=product)
-        if product_order:
-            quantity = product_order[0].quantity
+    if request.user.is_authenticated:
+        order = request.user.order.filter(close=False)
+        if order:
+            product_order = ProductOrder.objects.filter(
+                order=order[0], product=product)
+            if product_order:
+                quantity = product_order[0].quantity
+    comments = Review.objects.filter(product=product)
     context = {
         'product': product,
         'images': images,
-        'quantity': quantity
+        'quantity': quantity,
+        'comments': comments
     }
     context = dict(
         list(context.items()) +
@@ -91,7 +118,10 @@ def change_cart(request):
         print(request.POST)
         product = Product.objects.get(id=request.POST['product'])
         if product.quantity < 0:
-            return JsonResponse(status=400, data={'reload': ''})
+            return JsonResponse(
+                status=HTTPStatus.BAD_REQUEST,
+                data={'reload': ''}
+            )
         order = request.user.order.filter(
             close=False)[0]
         product_order = order.product_order.filter(product=product)
@@ -202,3 +232,10 @@ def category(request, category_id, sort='popular', filter_str='-'):
 
 def above(request):
     pass
+
+
+def page_not_found(request, exception):
+    return render(
+        request, 'auth/404.html',
+        status=HTTPStatus.NOT_FOUND
+    )

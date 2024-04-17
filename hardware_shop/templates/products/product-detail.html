@@ -3,6 +3,26 @@
 {% load customtags %}
 {% load thumbnail %}
 {% block content %}
+<script>
+    $(document).ready(function () {
+        $('#comment-form').submit(function () {
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                success: function (html) {
+                    location.reload(true)
+                },
+                error: function (html) {
+                    text = JSON.parse(html.responseText)
+                    console.log(text)
+                    toastr.error(text['error'])
+                }
+            });
+            return false;
+        });
+    });
+</script>
 <div class="main-block">
     <div class="card-detail">
         <div class="images">
@@ -98,6 +118,109 @@
     <div id="description-block">
         <p id="description-head-text">Описание</p>
         <p id="description-text">{{ product.description }}</p>
+    </div>
+</div>
+{% if user.is_authenticated %}
+<div id="description-main-block" class="main-block">
+    <form id="comment-form" method="post" action="{% url 'user:review' product.id %}">
+        {% csrf_token %}
+        <div id="comment-block">
+            <p style="margin-top: 0;">
+                Оставить комментарий:
+            </p>
+            <div style="display: flex; margin-bottom: 10px;">
+                <div style="width: 80%; display: flex;">
+                    <p>
+                        Заголовок
+                    </p>
+                    <input type="text" name="title" style="margin: 0 10px;">
+                </div>
+                <div class="rating-area">
+                    <input type="radio" id="star-5" name="score" checked="checked" value="5">
+                    <label for="star-5" title="Оценка «5»"></label>
+                    <input type="radio" id="star-4" name="score" value="4">
+                    <label for="star-4" title="Оценка «4»"></label>
+                    <input type="radio" id="star-3" name="score" value="3">
+                    <label for="star-3" title="Оценка «3»"></label>
+                    <input type="radio" id="star-2" name="score" value="2">
+                    <label for="star-2" title="Оценка «2»"></label>
+                    <input type="radio" id="star-1" name="score" value="1">
+                    <label for="star-1" title="Оценка «1»"></label>
+                </div>
+            </div>
+            <textarea id="comment-area" name="text"></textarea>
+            <button id="comment-button" type="submit" class="btn btn-primary">
+                <p>
+                    Сохранить
+                </p>
+            </button>
+        </div>
+    </form>
+</div>
+{% endif %}
+<div id="description-main-block" class="main-block">
+    <div id="comment-form">
+        <div id="comment-block">
+            {% for comment in comments %}
+            <div class="comment">
+                <div class="comment-head">
+                    <div class="comment-head-author">
+                        <p class="comment-head-author-text-1">
+                            Автор:
+                        </p>
+                        <p class="comment-head-author-text-2">
+                            {{ comment.user.username }}
+                        </p>
+                    </div>
+                    <div class="comment-head-topic">
+                        <p class="comment-head-topic-text">
+                            {{ comment.title }}
+                        </p>
+                    </div>
+                    <div class="comment-head-score">
+                        <div class="rating-result">
+                            {% if comment.score == 1 %}
+                            <span class="active"></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            {% elif comment.score == 2 %}
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            {% elif comment.score == 3 %}
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            <span></span>
+                            <span></span>
+                            {% elif comment.score == 4 %}
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            <span></span>
+                            {% elif comment.score == 5 %}
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="comment-text">
+                    <p class="comment-text-text">
+                        {{ comment.comment }}
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock %}

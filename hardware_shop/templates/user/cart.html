@@ -28,7 +28,7 @@
                     var final_amount = Number(document.getElementById("final_amount").textContent);
                     final_amount -= 1
                     final_price -= parseInt($(this).parent().prev().find("div").find('p[class="card-price"]').text())
-                    document.getElementById("final_price").textContent = final_price
+                    document.getElementsByClassName("final_price").textContent = final_price
                     document.getElementById("final_amount").textContent = final_amount
                 } else {
                     toastr.error("Не меньше 1 шт")
@@ -73,6 +73,64 @@
         });
     });
 </script>
+<script>
+    $(document).ready(function () {
+        $("#close-cart-button").click(function () {
+            var products_list = []
+            var quantitys_list = []
+            var quantitys = document.getElementsByClassName("input-quantity")
+            var products = document.getElementsByClassName("input-product")
+            for (index = 0; index < quantitys.length; ++index) {
+                products_list.push(products[index].value)
+                quantitys_list.push(quantitys[index].value)
+            }
+            document.getElementById('final-input-product').value = products_list
+            document.getElementById('final-input-quantity').value = quantitys_list
+        });
+        $("#close-cart").submit(function () {
+            $.ajax({
+                type: 'POST',
+                url: $(this).attr('action'),
+                data: $(this).serialize(),
+                success: function (html) {
+                    document.getElementById("blackout").classList.toggle("show");
+                    document.getElementsByClassName("success-order")[0].classList.toggle("show");
+                    var products = document.getElementsByClassName('delete-product')
+                    for (var i = 0; i < products.length; i++) {
+                        products[i].parentNode.removeChild(products[i]);
+                    }
+
+                },
+                error: function (html) {
+                    text = JSON.parse(html.responseText)
+                    console.log(text)
+                    toastr.error(text['error'])
+                }
+            });
+            return false
+        })
+    });
+</script>
+<div class="success-order">
+    <div id="success-order-block">
+        <div id="success-order-up-block">
+            <div id="success-order-img-block">
+                <img id="success-order-img" class="icon" src="{% static 'user/sucess.svg' %}" />
+            </div>
+            <div id="success-order-text-block">
+                <p id="success-order-text-1">Спасибо!</p>
+                <p id="success-order-text-2">Ваша заявка принята. Мы свяжемся с вами в ближайшее время</p>
+            </div>
+        </div>
+        <div id="success-order-down-block">
+            <a href="{% url 'products:index' %}">
+                <p>
+                    Перейти на главную
+                </p>
+            </a>
+        </div>
+    </div>
+</div>
 <div class="main-block" name="cart">
     <div class="cart-width">
         <div id="cart-links">
@@ -85,11 +143,11 @@
     <img id="background_image" src="{% static 'user/cart.png' %}" />
 </div>
 <div id="close-order" class="main-block">
-    <form method="post" action="{% url 'user:cart' %}">
+    <form id="close-cart" method="post" action="{% url 'user:cart' %}">
         {% csrf_token %}
         <div class="filter-block">
             <div>
-                <div class="filter-block-inner">
+                <div class="filter-block-inner border-bottom">
                     <div>
                         <p class="filter-text">Итого</p>
                     </div>
@@ -112,9 +170,24 @@
                 </div>
                 <div class="filter-block-inner">
                     <div>
-                        <button type="submit" class="button-close" name="close">
+                        <div class="left-block">
+                            <p class="profile-input-block">Адрес</p>
+                            <input type="address" class="profile-input" name="address" required placeholder="Адрес">
+                        </div>
+                        <div class="left-block">
+                            <p class="profile-input-block">Телефон</p>
+                            <input type="tel" class="profile-input" name="phone" required placeholder="+7(359)90-38-98"
+                                value="{{ user.phone }}">
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-block-inner border-top">
+                    <div>
+                        <button id="close-cart-button" type="submit" class="button-close" name="close">
                             <p>Оформить заказ</p>
                         </button>
+                        <input id="final-input-product" type="text" name="product" hidden>
+                        <input id="final-input-quantity" type="text" name="quantity" hidden>
                     </div>
                 </div>
             </div>
@@ -148,7 +221,8 @@
                             <button type="button" class="remove-one">
                                 <img src="{% static 'card/remove.svg' %}" />
                             </button>
-                            <input type="text" name="quantity" value="{{ order.product.quantity }}" hidden>
+                            <input class="input-quantity" type="text" name="quantity" value="{{ order.quantity }}"
+                                hidden>
                         </div>
                     </div>
                 </div>
@@ -161,7 +235,7 @@
                         <button type="submit" class="button-delete show" name="delete" hidden>
                             <p>Удалить товар</p>
                         </button>
-                        <input type="text" name="product" value="{{ order.product.id }}" hidden>
+                        <input class="input-product" type="text" name="product" value="{{ order.product.id }}" hidden>
                         <input type="text" name="delete" hidden>
                     </div>
                 </div>

@@ -1,6 +1,5 @@
 from django.db import models
-
-from .validators import validate_score
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 
 class Category(models.Model):
@@ -67,11 +66,14 @@ class Product(models.Model):
         help_text='Цена товара',
         default=0
     )
-    score = models.FloatField(
+    score = models.PositiveIntegerField(
         'Оценка товара',
         help_text='Оценка товара',
-        validators=[validate_score],
-        default=0
+        default=0,
+        validators=[
+            MaxValueValidator(5),
+            MinValueValidator(0)
+        ]
     )
     created = models.DateTimeField(
         'Дата добавления товара',
@@ -86,37 +88,6 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class Review(models.Model):
-    product = models.ForeignKey(
-        Product,
-        on_delete=models.CASCADE,
-        related_name='review',
-        verbose_name='Товар на который оставляется отзыв',
-    )
-    title = models.CharField(
-        'Заголовок отзыва',
-        help_text='Заголовок отзыва',
-        max_length=50,
-    )
-    comment = models.TextField(
-        'Текст отзыва',
-        help_text='Текст отзыва',
-    )
-    score = models.FloatField(
-        'Оценка товара',
-        help_text='Оценка товара',
-        max_length=3,
-        validators=[validate_score]
-    )
-
-    class Meta:
-        verbose_name = 'Комментарий'
-        verbose_name_plural = 'Комментарии'
-
-    def __str__(self):
-        return self.title
 
 
 class ProductImage(models.Model):

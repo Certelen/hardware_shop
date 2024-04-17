@@ -19,10 +19,11 @@
                     {% endfor %}
                 </div>
             </button>
-            <form method="post" action="{% url 'products:search'%}">
+            <form id="search-form" method="post" action="{% url 'products:search'%}">
                 {% csrf_token %}
                 <div class="input">
-                    <input type="text" class="search" name="search_product" required placeholder="Поиск">
+                    <input type="text" class="search" name="search_product" value="{{ search_word }}" required
+                        placeholder="Поиск">
                     <input type="submit" hidden />
                     <div class="arrow-icon">
                         <img alt="" class="vector" src="{% static 'header/search.svg' %}" />

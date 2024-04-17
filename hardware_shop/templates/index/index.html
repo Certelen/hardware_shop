@@ -37,7 +37,42 @@
                     <p class="popular-text">
                         {{ product.name }}
                     </p>
-                    <p class="price">{{ product.price }} ₽</p>
+                    <div class="price-field">
+                        <p class="price">{{ product.price }} ₽</p>
+                        <div class="rating-mini">
+                            {% if product.score == 1 %}
+                            <span class="active"></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            {% elif product.score == 2 %}
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            {% elif product.score == 3 %}
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            <span></span>
+                            <span></span>
+                            {% elif product.score == 4 %}
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            <span></span>
+                            {% elif product.score == 5 %}
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            <span class="active"></span>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
                 <div class="in-cart">
 

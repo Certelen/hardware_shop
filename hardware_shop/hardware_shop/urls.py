@@ -5,9 +5,7 @@ from django.urls import include, path
 
 from about import views
 
-# handler500 = 'core.views.server_error'
-# handler404 = 'core.views.page_not_found'
-# handler403 = 'core.views.csrf_failure'
+handler404 = 'products.views.page_not_found'
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -18,7 +16,6 @@ urlpatterns = [
     path('about', views.AboutView.as_view(), name='about'),
 ]
 
-if settings.DEBUG:
-    urlpatterns += static(
-        settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
-    )
+urlpatterns += static(
+    settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+)

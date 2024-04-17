@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 from products.models import Product
 from .managers import UserManager
@@ -41,7 +42,7 @@ class CustomUser(AbstractUser):
             "unique": _("A user with that email already exists."),
         },
     )
-    birth_date = models.DateTimeField(
+    birth_date = models.DateField(
         "Дата рождения",
         null=True,
         blank=True
@@ -68,6 +69,45 @@ class CustomUser(AbstractUser):
         return self.email
 
 
+class Review(models.Model):
+    user = models.ForeignKey(
+        CustomUser,
+        on_delete=models.CASCADE,
+        related_name='review',
+        verbose_name='Пользователь оставивший отзыв',
+    )
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='review',
+        verbose_name='Товар на который оставляется отзыв',
+    )
+    title = models.CharField(
+        'Заголовок отзыва',
+        help_text='Заголовок отзыва',
+        max_length=50,
+    )
+    comment = models.TextField(
+        'Текст отзыва',
+        help_text='Текст отзыва',
+    )
+    score = models.PositiveSmallIntegerField(
+        'Оценка товара',
+        help_text='Оценка товара',
+        validators=[
+            MaxValueValidator(5),
+            MinValueValidator(1)
+        ]
+    )
+
+    class Meta:
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
+
+    def __str__(self):
+        return self.title
+
+
 class Order(models.Model):
     user = models.ForeignKey(
         CustomUser,
@@ -78,7 +118,7 @@ class Order(models.Model):
     number = models.CharField(
         'Номер получателя',
         help_text='Номер получателя',
-        max_length=11,
+        max_length=15,
         blank=True
     )
     address = models.CharField(
@@ -96,6 +136,11 @@ class Order(models.Model):
         Product,
         through='ProductOrder',
         verbose_name='Товары',
+    )
+    close_data = models.DateField(
+        "Дата закрытия заказа",
+        null=True,
+        blank=True
     )
 
     class Meta:
