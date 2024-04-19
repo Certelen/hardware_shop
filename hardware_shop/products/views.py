@@ -44,12 +44,14 @@ def context_forms(request, now_order=None):
     return context
 
 
-def index(request, now_order=None):
+def index(request):
     context = {
-        'categorys': Category.objects.all(),
         'popular': Product.objects.all().order_by('score')[:5]
     }
-
+    context = dict(
+        list(context.items()) +
+        list(context_forms(request).items())
+    )
     return render(request, 'index/index.html', context)
 
 
@@ -115,7 +117,6 @@ def product_detail(request, product_id, quantity=1):
 @login_required
 def change_cart(request):
     if request.method == "POST":
-        print(request.POST)
         product = Product.objects.get(id=request.POST['product'])
         if product.quantity < 0:
             return JsonResponse(

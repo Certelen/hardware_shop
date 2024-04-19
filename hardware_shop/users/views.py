@@ -64,7 +64,6 @@ def profile(request):
                 user.set_password(new_password)
                 user.save()
             return JsonResponse(status=HTTPStatus.OK, data={'update': True})
-        print(request.POST)
         context = {
             'profile_form': form
         }
@@ -84,7 +83,6 @@ def orders(request):
     context = {
         'page_obj': page_obj
     }
-    print(page_obj)
     context = dict(
         list(context.items()) +
         list(context_forms(request).items())
@@ -131,11 +129,8 @@ def cart(request):
                         'error': f'Товара {order_obj.product.name} осталось\
                             {order_obj.product.quantity} шт.'})
             order_obj.quantity = quantity_list[index]
-            print('В заказе', order_obj.quantity)
             product = order_obj.product
-            print('В заказе товар', product)
             product.quantity -= quantity_list[index]
-            print('Товар изменился?', product, product.quantity)
             changed_list.append(order_obj)
             changed_list.append(product)
         for obj in changed_list:
@@ -233,9 +228,6 @@ def review(request, product_id):
             score=data['score']
         )
         score_list = [review.score for review in product.review.all()]
-        print(score_list)
-        print(sum(score_list) / 6)
-        print(sum(score_list) / len(score_list))
         product.score = sum(score_list) / len(score_list)
         product.save()
         return JsonResponse(status=HTTPStatus.OK, data={})

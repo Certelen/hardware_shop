@@ -864,6 +864,7 @@ header .main-block {
 /*logo block*/
 .logo-text-header {
     text-align: center;
+    color: black;
 }
 
 .logo-text-footer {

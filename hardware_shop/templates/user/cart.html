@@ -4,6 +4,7 @@
 {% load thumbnail %}
 {% block content %}
 <script>
+    // При нажатии кнопки +/- добавляется/уменьшается кол-во товара в корзине и увеличивается/уменьшается общая цена и общее кол-во товаров
     $(document).ready(function () {
         $('.add-one').click(function () {
             let amount = parseInt($(this).next().children('p').text(), 10)
@@ -28,7 +29,7 @@
                     var final_amount = Number(document.getElementById("final_amount").textContent);
                     final_amount -= 1
                     final_price -= parseInt($(this).parent().prev().find("div").find('p[class="card-price"]').text())
-                    document.getElementsByClassName("final_price").textContent = final_price
+                    document.getElementById("final_price").textContent = final_price
                     document.getElementById("final_amount").textContent = final_amount
                 } else {
                     toastr.error("Не меньше 1 шт")
@@ -38,10 +39,10 @@
     });
 </script>
 <script>
+    // При нажатии кнопки "Удалить товар" товар удаляется из html страницы и из заказа в БД
     $(document).ready(function () {
         $(".delete-product").submit(function () {
             var elem = $(this)
-            console.log(elem)
             $.ajax({
                 type: 'POST',
                 url: $(this).attr('action'),
@@ -50,10 +51,8 @@
                     if (elem.attr('name') == 'delete') {
                         var final_price = Number(document.getElementById("final_price").textContent);
                         var final_amount = Number(document.getElementById("final_amount").textContent);
-                        console.log(elem.find("input[name='quantity']").attr('value'))
                         product_amount = parseInt(elem.find("div[class='in-cart']").find("div[class='amount").find("p[name='quantity']").text())
                         final_amount -= product_amount
-                        console.log(final_amount)
                         final_price -= parseInt(elem.find("div[class='card-text']").find("div").find('p[class="card-price"]').text()) * product_amount
                         document.getElementById("final_price").textContent = final_price
                         document.getElementById("final_amount").textContent = final_amount
@@ -74,6 +73,9 @@
     });
 </script>
 <script>
+    // При нажатии кнопки "Оформить заказ" собираются списки: id товаров, количество каждого товара; и отправляется на сервер.
+    // При ошибке (Нет адреса, телефона, продукт убран из заказа на другой странице, кол-во товара превышает его остаток в БД) выводится ошибка.
+    // При успешном закрытии заказа - выводится табличка с уведомлением и ссылкой на главную.
     $(document).ready(function () {
         $("#close-cart-button").click(function () {
             var products_list = []
@@ -103,7 +105,6 @@
                 },
                 error: function (html) {
                     text = JSON.parse(html.responseText)
-                    console.log(text)
                     toastr.error(text['error'])
                 }
             });

@@ -1,9 +1,11 @@
 {% load static %}
 <div class="footer-links">
     <div class="footer-links-block">
-        <div class="logo-box">
-            <p class="logo-text-footer">Тест сайт</p>
-        </div>
+        <a href="{% url 'products:index' %}">
+            <div class="logo-box">
+                <p class="logo-text-footer">Тест сайт</p>
+            </div>
+        </a>
         <div class="footer-link">
             <img class="icon" src="{% static 'footer/mail.svg' %}" />
             <a href="{% url 'about'%}#mail">Почта</a>
@@ -14,7 +16,7 @@
         </div>
     </div>
     <div class="footer-links-block">
-        <div id="profile-link" class="footer-link">
+        <div id="profile-link" class="footer-link" name="button-form-login">
             <a href="{% url 'user:profile'%}">Личный кабинет</a>
         </div>
         <div class="footer-link">

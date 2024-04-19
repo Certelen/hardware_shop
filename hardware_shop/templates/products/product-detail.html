@@ -4,6 +4,7 @@
 {% load thumbnail %}
 {% block content %}
 <script>
+    // Отправка отзыва на сервер. При ошибке (Недостаточно символов) выдает уведомление. При успехе - перезагрузка страницы.
     $(document).ready(function () {
         $('#comment-form').submit(function () {
             $.ajax({
@@ -23,47 +24,49 @@
         });
     });
 </script>
+<script>
+    // Переключение изображений при нажатии на их миниатюры.
+    $(document).ready(function () {
+        $('.thumbnails img').on({
+            click: function () {
+                let thumbnailURL = $(this).attr('src');
+                $('.main_image img').fadeOut(200, function () {
+                    $(this).attr('src', thumbnailURL);
+                }).fadeIn(200);
+            }
+        });
+    }); 
+</script>
+<script>
+    // При нажатии кнопки +/- добавляется/уменьшается кол-во товара для добавления в корзину.
+    $(document).ready(function () {
+        $('#add-one').click(function () {
+            let amount = parseInt($('#amount p').text(), 10)
+            if (amount + 1 > '{{ product.quantity }}') {
+                toastr.error("Осталось '{{ product.quantity }}' шт")
+            } else {
+                if (amount > 0) {
+                    $('#amount p').text(amount + 1)
+                    $(this).parent().prev().find("input[name='quantity']").attr('value', $(this).next().children('p').text())
+                } else {
+                    toastr.error("Не меньше 1 шт")
+                }
+            }
+        });
+    });
+    $(document).ready(function () {
+        $('#remove-one').click(function () {
+            let amount = parseInt($('#amount p').text(), 10)
+            if (amount > 1) {
+                $('#amount p').text(amount - 1)
+                $(this).parent().prev().find("input[name='quantity']").attr('value', $(this).prev().children('p').text())
+            }
+        });
+    });
+</script>
 <div class="main-block">
     <div class="card-detail">
         <div class="images">
-            <script>
-                $(document).ready(function () {
-                    $('.thumbnails img').on({
-                        click: function () {
-                            let thumbnailURL = $(this).attr('src');
-                            $('.main_image img').fadeOut(200, function () {
-                                $(this).attr('src', thumbnailURL);
-                            }).fadeIn(200);
-                        }
-                    });
-                }); 
-            </script>
-            <script>
-                $(document).ready(function () {
-                    $('#add-one').click(function () {
-                        let amount = parseInt($('#amount p').text(), 10)
-                        if (amount + 1 > '{{ product.quantity }}') {
-                            toastr.error("Осталось '{{ product.quantity }}' шт")
-                        } else {
-                            if (amount > 0) {
-                                $('#amount p').text(amount + 1)
-                                $(this).parent().prev().find("input[name='quantity']").attr('value', $(this).next().children('p').text())
-                            } else {
-                                toastr.error("Не меньше 1 шт")
-                            }
-                        }
-                    });
-                });
-                $(document).ready(function () {
-                    $('#remove-one').click(function () {
-                        let amount = parseInt($('#amount p').text(), 10)
-                        if (amount > 1) {
-                            $('#amount p').text(amount - 1)
-                            $(this).parent().prev().find("input[name='quantity']").attr('value', $(this).prev().children('p').text())
-                        }
-                    });
-                });
-            </script>
             <div class="main_image">
                 {% thumbnail images|first "428x572" crop="center" upscale=True as product_image_main %}
                 <img id="main_image" src="{{ product_image_main.url }}" />

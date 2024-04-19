@@ -120,6 +120,13 @@
 <script>
     //Нажатие Регистрация в форме логина и Логин в форме регистрации меняет форму
     $(document).on("click", ".button-switch", function () {
+        if ($(this).attr('name') == 'signup') {
+            document.getElementById("profile").setAttribute("name", "button-form-signup");
+            document.getElementById("profile-link").setAttribute("name", "button-form-signup");
+        } else {
+            document.getElementById("profile").setAttribute("name", "button-form-login");
+            document.getElementById("profile-link").setAttribute("name", "button-form-login");
+        }
         document.getElementById("button-form-login").classList.toggle("show");
         document.getElementById("button-form-signup").classList.toggle("show");
         return false
