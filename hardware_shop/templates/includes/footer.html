@@ -1,37 +1,39 @@
 {% load static %}
-<div class="footer-links">
-    <div class="footer-links-block">
-        <a href="{% url 'products:index' %}">
-            <div class="logo-box">
-                <p class="logo-text-footer">Тест сайт</p>
+<div class="footer-links container mb-3">
+    <div class="row w-100">
+        <div class="footer-links-block col-12 col-lg-3 align-items-center order-1 order-lg-1"
+            style="font-weight: 600; font-family: 'Noto Sans', sans-serif;">
+            <a href="{% url 'products:index' %}">
+                <div class="logo-box">
+                    <p class="logo-text-footer">24ecovata</p>
+                </div>
+            </a>
+        </div>
+        <div class="footer-links-block col-12 col-lg-6 order-3 order-lg-2"
+            style="font-weight: 600; font-family: 'Noto Sans', sans-serif;">
+            <div class="footer-link">
+                <img class="icon" src="{% static 'footer/mail.svg' %}" />
+                <span style="color: white;">EcovataKrsk@yandex.ru</span>
             </div>
-        </a>
-        <div class="footer-link">
-            <img class="icon" src="{% static 'footer/mail.svg' %}" />
-            <a href="{% url 'about'%}#mail">Почта</a>
+            <div class="footer-link">
+                <img class="icon" src="{% static 'footer/address.svg' %}" />
+                <span style="color: white;">Енисейский тракт (10 км), 3/7, Красноярск, +7 391 255 22 12</span>
+            </div>
+            <div class="footer-link">
+                <img class="icon" src="{% static 'footer/phone.svg' %}" />
+                <span style="color: white;">+7 391 255 22 12</span>
+            </div>
         </div>
-        <div class="footer-link">
-            <img class="icon" src="{% static 'footer/address.svg' %}" />
-            <a href="{% url 'about'%}#address">Адрес</a>
-        </div>
-    </div>
-    <div class="footer-links-block">
-        <div id="profile-link" class="footer-link" name="button-form-login">
-            <a href="{% url 'user:profile'%}">Личный кабинет</a>
-        </div>
-        <div class="footer-link">
-            <a href="{% url 'user:cart'%}">Корзина</a>
-        </div>
-        <div class="footer-link">
-            <a href="{% url 'user:orders'%}">Заказы</a>
-        </div>
-        <div class="footer-link">
-            <a href="{% url 'user:favorite'%}">Избранное</a>
-        </div>
-    </div>
-    <div class="footer-links-block">
-        <div class="footer-link">
-            <a href="{% url 'about'%}">Контакты</a>
+        <div class="footer-links-block col-12 col-lg-3 align-items-center order-2 order-lg-3 mb-3 ">
+            <div id="profile-link" class="footer-link" name="button-form-login">
+                <a href="{% url 'user:profile'%}">Личный кабинет</a>
+            </div>
+            <div class="footer-link">
+                <a href="{% url 'user:cart'%}">Корзина</a>
+            </div>
+            <div class="footer-link">
+                <a href="{% url 'user:orders'%}">Заказы</a>
+            </div>
         </div>
     </div>
 </div>

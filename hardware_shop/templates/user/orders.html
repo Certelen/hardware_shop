@@ -3,7 +3,7 @@
 {% load customtags %}
 {% load thumbnail %}
 {% block content %}
-<div class="main-block" name="cart">
+<div class="main-block container" name="cart" style="overflow: hidden;">
     <div class="cart-width">
         <div id="cart-links">
             <a href="{% url 'products:index' %}">Главная</a>
@@ -14,41 +14,46 @@
     </div>
     <img id="background_image" src="{% static 'user/orders.png' %}" />
 </div>
-<div id="close-order" class="main-block">
+<div id="close-order" class="main-block container">
     <div id="orders-list">
         {% for orders in page_obj %}
         {% for order in orders %}
         {% for product_order in order %}
-        <div class="card-order">
-            {% thumbnail product_order.product.main_image "180x134" crop="center" upscale=True as product_image %}
-            <img src="{{ product_image.url }}" />
-            {% endthumbnail %}
-            <div class="card-order-right">
-                <div class="card-order-info">
-                    <p class="order-text">{{ product_order.product.name }}</p>
-                    <div style="display: flex;">
-                        <p class="card-price">{{ product_order.product.price }}</p>
-                        <p class="card-price">&nbsp;₽</p>
+        <div class="card-order row">
+            <div class="d-flex col-12 col-lg-2 justify-content-center align-items-center">
+                {% thumbnail product_order.product.main_image "180x134" crop="center" upscale=True as product_image %}
+                <img src="{{ product_image.url }}" />
+                {% endthumbnail %}
+            </div>
+            <div class="card-order-right col-12 col-lg-10 d-flex justify-content-center align-items-center"
+                style="border-top: 1px solid #cfcfcf;">
+                <div class="row w-100">
+                    <div class="card-order-info col-12 col-lg-6 justify-content-center align-items-center">
+                        <p class="order-text">{{ product_order.product.name }}</p>
+                        <div style="display: flex;">
+                            <p class="card-price">{{ product_order.product.price }}</p>
+                            <p class="card-price">&nbsp;₽</p>
+                        </div>
+                        <div style="display: flex;">
+                            <p class="order-text">{{ product_order.quantity }}</p>
+                            <p class="order-text">&nbsp;шт.</p>
+                        </div>
                     </div>
-                    <div style="display: flex;">
-                        <p class="order-text">{{ product_order.quantity }}</p>
-                        <p class="order-text">&nbsp;шт.</p>
-                    </div>
-                </div>
-                <div class="card-orders-info">
-                    <div class="card-order-info" style="justify-content:unset;">
-                        <p class="product-id" style="font-weight: 600;">
-                            Заказ от {{ product_order.order.close_data }}
-                        </p>
-                        <p class="product-id">
-                            {{ product_order.order.user.id }}{{ product_order.order.id}}{{forloop.counter}}
-                        </p>
-                    </div>
-                    <div class="card-order-info" style="justify-content:unset; border-left:unset">
-                        <p class="product-id" style="font-weight: 600;">Статус</p>
-                        <p class="product-id">
-                            {% if product_order.order.close %}Оплачен{% endif %}
-                        </p>
+                    <div class="card-orders-info col-12 col-lg-6" style="border-top: 1px solid #cfcfcf;">
+                        <div class="card-order-info" style="justify-content:unset;">
+                            <p class="product-id" style="font-weight: 600;">
+                                Заказ от {{ product_order.order.close_data }}
+                            </p>
+                            <p class="product-id">
+                                {{ product_order.order.user.id }}{{ product_order.order.id}}{{forloop.counter}}
+                            </p>
+                        </div>
+                        <div class="card-order-info" style="justify-content:unset; border-left:unset">
+                            <p class="product-id" style="font-weight: 600;">Статус</p>
+                            <p class="product-id">
+                                {{ product_order.order.get_close_display }}
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>

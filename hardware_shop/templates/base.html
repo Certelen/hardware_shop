@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -6,25 +7,17 @@
 </head>
 
 <body>
-    <div id="blackout" class="blackout">
-    </div>
-    <div id="window_form" class="window">
-        {% if user.is_authenticated %}
-        {% include 'user/profile.html' %}
-        {% else %}
-        {% include 'auth/login.html' %}
-        {% include 'auth/signup.html' %}
-        {% endif %}
-    </div>
+    <div class="head_margin"></div>
     <header>
         {% include 'includes/header.html' %}
     </header>
     {% block content %}
     {% endblock %}
 
-    <footer class="footer">
+    <footer class="footer mt-5">
         {% include 'includes/footer.html' %}
     </footer>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 </body>
 
 </html>

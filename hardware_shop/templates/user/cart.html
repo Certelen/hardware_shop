@@ -95,8 +95,7 @@
                 url: $(this).attr('action'),
                 data: $(this).serialize(),
                 success: function (html) {
-                    document.getElementById("blackout").classList.toggle("show");
-                    document.getElementsByClassName("success-order")[0].classList.toggle("show");
+                    $('#success_button').click()
                     var products = document.getElementsByClassName('delete-product')
                     for (var i = 0; i < products.length; i++) {
                         products[i].parentNode.removeChild(products[i]);
@@ -112,27 +111,32 @@
         })
     });
 </script>
-<div class="success-order">
-    <div id="success-order-block">
-        <div id="success-order-up-block">
-            <div id="success-order-img-block">
-                <img id="success-order-img" class="icon" src="{% static 'user/sucess.svg' %}" />
+<div class="modal fade" id="success" tabindex="-1" aria-labelledby="successLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div id="success-order-up-block">
+                <div id="success-order-img-block">
+                    <img id="success-order-img" class="icon" src="{% static 'user/sucess.svg' %}" />
+                </div>
+                <div id="success-order-text-block">
+                    <p id="success-order-text-1">Спасибо!</p>
+                    <p id="success-order-text-2">Ваша заявка принята. Мы свяжемся с вами в ближайшее время</p>
+                </div>
             </div>
-            <div id="success-order-text-block">
-                <p id="success-order-text-1">Спасибо!</p>
-                <p id="success-order-text-2">Ваша заявка принята. Мы свяжемся с вами в ближайшее время</p>
+            <div id="success-order-down-block">
+                <a href="{% url 'products:index' %}">
+                    <p>
+                        Перейти на главную
+                    </p>
+                </a>
             </div>
-        </div>
-        <div id="success-order-down-block">
-            <a href="{% url 'products:index' %}">
-                <p>
-                    Перейти на главную
-                </p>
-            </a>
         </div>
     </div>
 </div>
-<div class="main-block" name="cart">
+<button id="success_button" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#success"
+    hidden>
+</button>
+<div class="main-block container" name="cart" style="overflow: hidden;">
     <div class="cart-width">
         <div id="cart-links">
             <a href="{% url 'products:index' %}">Главная</a>
@@ -143,106 +147,112 @@
     </div>
     <img id="background_image" src="{% static 'user/cart.png' %}" />
 </div>
-<div id="close-order" class="main-block">
-    <form id="close-cart" method="post" action="{% url 'user:cart' %}">
-        {% csrf_token %}
-        <div class="filter-block">
-            <div>
-                <div class="filter-block-inner border-bottom">
-                    <div>
-                        <p class="filter-text">Итого</p>
-                    </div>
-                    <div class="card-final">
-                        <div class="row-final">
-                            <p class="final-text">Количество товара</p>
-                            <div style="display: flex;">
-                                <p id="final_amount" class="final-text">{{ final_amount }}</p>
-                                <p class="final-text">&nbsp;шт.</p>
-                            </div>
-                        </div>
-                        <div class="row-final">
-                            <p class="final-text">Товаров на сумму</p>
-                            <div style="display: flex;">
-                                <p id="final_price" class="final-text">{{ final_price }}</p>
-                                <p class="final-text">&nbsp;₽</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="filter-block-inner">
-                    <div>
-                        <div class="left-block">
-                            <p class="profile-input-block">Адрес</p>
-                            <input type="address" class="profile-input" name="address" required placeholder="Адрес">
-                        </div>
-                        <div class="left-block">
-                            <p class="profile-input-block">Телефон</p>
-                            <input type="tel" class="profile-input" name="phone" required placeholder="+7(359)90-38-98"
-                                value="{{ user.phone }}">
-                        </div>
-                    </div>
-                </div>
-                <div class="filter-block-inner border-top">
-                    <div>
-                        <button id="close-cart-button" type="submit" class="button-close" name="close">
-                            <p>Оформить заказ</p>
-                        </button>
-                        <input id="final-input-product" type="text" name="product" hidden>
-                        <input id="final-input-quantity" type="text" name="quantity" hidden>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
-    <div id="products">
-        {% for order in cart %}
-        <form id="{{ order.product.id }}" class="delete-product" name="delete" method="post"
-            action="{% url 'products:change_cart' %}">
+<div id="close-order" class="main-block container">
+    <div class="row">
+        <form id="close-cart" class="col-12 col-lg-3 mb-3" method="post" action="{% url 'user:cart' %}">
             {% csrf_token %}
-            <div class="card-cart">
-                {% thumbnail order.product.main_image "278x208" crop="center" upscale=True as product_image %}
-                <img src="{{ product_image.url }}" />
-                {% endthumbnail %}
+            <div class="filter-block">
                 <div>
-                    <div class="card-info">
-                        <div class="card-text">
-                            <p class="filter-text">{{ order.product.name }}</p>
-                            <div style="display: flex;">
-                                <p class="card-price">{{ order.product.price }}</p>
-                                <p class="card-price">&nbsp;₽</p>
-                            </div>
+                    <div class="filter-block-inner border-bottom">
+                        <div>
+                            <p class="filter-text">Итого</p>
                         </div>
-                        <div class="in-cart">
-                            <button type="button" class="add-one">
-                                <img src="{% static 'card/add.svg' %}" />
-                            </button>
-                            <div class="amount">
-                                <p name="quantity">{{ order.quantity }}</p>
+                        <div class="card-final">
+                            <div class="row-final">
+                                <p class="final-text">Количество товара</p>
+                                <div style="display: flex;">
+                                    <p id="final_amount" class="final-text">{{ final_amount }}</p>
+                                    <p class="final-text">&nbsp;шт.</p>
+                                </div>
                             </div>
-                            <button type="button" class="remove-one">
-                                <img src="{% static 'card/remove.svg' %}" />
-                            </button>
-                            <input class="input-quantity" type="text" name="quantity" value="{{ order.quantity }}"
-                                hidden>
+                            <div class="row-final">
+                                <p class="final-text">Товаров на сумму</p>
+                                <div style="display: flex;">
+                                    <p id="final_price" class="final-text">{{ final_price }}</p>
+                                    <p class="final-text">&nbsp;₽</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div>
-                    <div class="product-info">
+                    <div class="filter-block-inner">
                         <div>
-                            <p class="product-id">Код товара:</p>
-                            <p class="product-id">{{ order.product.id }}</p>
+                            <div class="left-block">
+                                <p class="profile-input-block">Адрес</p>
+                                <input type="address" class="profile-input" name="address" required placeholder="Адрес">
+                            </div>
+                            <div class="left-block">
+                                <p class="profile-input-block">Телефон</p>
+                                <input type="tel" class="profile-input" name="phone" required
+                                    placeholder="+7(359)90-38-98" value="{{ user.phone }}">
+                            </div>
                         </div>
-                        <button type="submit" class="button-delete show" name="delete" hidden>
-                            <p>Удалить товар</p>
-                        </button>
-                        <input class="input-product" type="text" name="product" value="{{ order.product.id }}" hidden>
-                        <input type="text" name="delete" hidden>
+                    </div>
+                    <div class="filter-block-inner border-top">
+                        <div>
+                            <button id="close-cart-button" type="submit" class="button-close" name="close">
+                                <p>Оформить заказ</p>
+                            </button>
+                            <input id="final-input-product" type="text" name="product" hidden>
+                            <input id="final-input-quantity" type="text" name="quantity" hidden>
+                        </div>
                     </div>
                 </div>
             </div>
         </form>
-        {% endfor %}
+        <div id="products" class="col-12 col-lg-9">
+            {% for order in cart %}
+            <form id="{{ order.product.id }}" class="delete-product" name="delete" method="post"
+                action="{% url 'products:change_cart' %}">
+                {% csrf_token %}
+                <div class="card-cart row" style="overflow: hidden;">
+                    <div class="col-12 col-lg-3 d-flex justify-content-center align-items-center"
+                        style="border-bottom:  1px solid #cfcfcf;">
+                        {% thumbnail order.product.main_image "278x208" crop="center" upscale=True as product_image%}
+                        <img src="{{ product_image.url }}" />
+                        {% endthumbnail %}
+                    </div>
+                    <div class="col-6 col-lg-5" style="border-left: 1px solid #cfcfcf;">
+                        <div class="card-info">
+                            <div class="card-text">
+                                <p class="filter-text">{{ order.product.name }}</p>
+                                <div style="display: flex;">
+                                    <p class="card-price">{{ order.product.price }}</p>
+                                    <p class="card-price">&nbsp;₽</p>
+                                </div>
+                            </div>
+                            <div class="in-cart" style="border: 1px solid #cfcfcf;">
+                                <button type="button" class="add-one" style="border-right: 1px solid #cfcfcf;">
+                                    <img src="{% static 'card/add.svg' %}" />
+                                </button>
+                                <div class="amount h-100">
+                                    <p class="mb-0" name="quantity">{{ order.quantity }}</p>
+                                </div>
+                                <button type="button" class="remove-one" style="border-left: 1px solid #cfcfcf;">
+                                    <img src="{% static 'card/remove.svg' %}" />
+                                </button>
+                                <input class="input-quantity" type="text" name="quantity" value="{{ order.quantity }}"
+                                    hidden>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-lg-4">
+                        <div class="product-info">
+                            <div>
+                                <p class="product-id">Код товара:</p>
+                                <p class="product-id">{{ order.product.id }}</p>
+                            </div>
+                            <button type="submit" class="button-delete show" name="delete" hidden>
+                                <p>Удалить товар</p>
+                            </button>
+                            <input class="input-product" type="text" name="product" value="{{ order.product.id }}"
+                                hidden>
+                            <input type="text" name="delete" hidden>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            {% endfor %}
+        </div>
     </div>
 </div>
 {% endblock %}

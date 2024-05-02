@@ -1,57 +1,127 @@
 {% load static %}
-<div class="main-block">
-    <div class="up"></div>
-    <div class="down">
-        <a href="{% url 'products:index' %}">
-            <div class="logo-box">
-                <p class="logo-text-header">Тест сайт</p>
+{% if user.is_authenticated %}
+<div class="modal fade" id="modal_login" tabindex="-1" aria-labelledby="modal_loginLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered justify-content-center">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_loginLabel">Личный кабинет</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-        </a>
-        <div class="control-panel">
-            <button class="dropdown">
-                <div class="dropbtn">
-                    <p class="icon-text">Все категории</p>
-                    <div class="arrow-icon">
-                        <img alt="" class="vector" src="{% static 'header/arrow.svg' %}" />
+            <div class="modal-body">
+                {% include 'user/profile.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="modal fade" id="modal_signup" tabindex="-1" aria-labelledby="modal_signupLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_signupLabel">Регистрация</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% include 'auth/signup.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal_login" tabindex="-1" aria-labelledby="modal_loginLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal_loginLabel">Вход</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {% include 'auth/login.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<div class="d-flex flex-column navbar navbar-expand-lg navbar-dark fixed-top navbarstyle pt-0"
+    style="background-color: white; border-bottom: 1px solid rgba(47, 50, 58, 1);">
+    <div class="up mb-4 col-12"></div>
+    <div class="container">
+        <div class="row w-100" style="padding-left: calc(var(--bs-gutter-x)* .5);">
+            <a class="col-1 d-none d-lg-block" href="{% url 'products:index' %}">
+                <div class="logo-box d-flex justify-content-center">
+                    <img alt="" class="vector" style="max-height: 48px; max-width: 48px;"
+                        src="{% static 'logo.jpg' %}" />
+                </div>
+            </a>
+            <div class="control-panel col-12 col-lg-11 justify-content-center">
+                <div class="row w-100">
+                    <a class="col-3 d-lg-none" href="{% url 'products:index' %}">
+                        <div class="logo-box d-flex justify-content-center">
+                            <img alt="" class="vector" style="max-height: 48px; max-width: 48px;"
+                                src="{% static 'logo.jpg' %}" />
+                        </div>
+                    </a>
+                    <div class="col-12 col-lg-3 order-1 d-flex justify-content-center order-lg-1 mb-3"
+                        style="max-height: 52px;">
+                        <button class="dropdown w-100" style="min-height: 52px;">
+                            <div class="dropbtn w-100">
+                                <p class="icon-text">Все категории</p>
+                                <div class="arrow-icon">
+                                    <img alt="" class="vector" src="{% static 'header/arrow.svg' %}" />
+                                </div>
+                            </div>
+                            <div id="myDropdown" class="dropdown-content">
+                                {% for category in categorys %}
+                                <a href="{% url 'products:category' category.id %}">
+                                    <span class="icon-text-header mobile-size"
+                                        style="font-weight: 600;">{{category.name}}</span>
+                                </a>
+                                {% endfor %}
+                            </div>
+                        </button>
+                    </div>
+                    <div class="col-9 col-lg-5 order-lg-2 mb-3">
+                        <form id="search-form" method="post" action="{% url 'products:search'%}">
+                            {% csrf_token %}
+                            <div class="input">
+                                <input type="text" class="search" name="search_product" value="{{ search_word }}"
+                                    required placeholder="Поиск">
+                                <input type="submit" hidden />
+                                <button type="submit" class="arrow-icon ps-0 mx-2" style="border: unset">
+                                    <img alt="" class="vector" src="{% static 'header/search.svg' %}" />
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="icons-block col-12 col-lg-4 order-2 order-lg-3 mb-3 d-flex justify-content-between">
+                        {% if user.is_authenticated %}
+                        <button type="button" class="icon-block" name="button-form-login" data-bs-toggle="modal"
+                            data-bs-target="#modal_login">
+                            <img alt="" class="icon" src="{% static 'header/profile.svg' %}" />
+                            <p class="icon-text-header">Профиль</p>
+                        </button>
+                        {% else %}
+                        <button type="button" class="icon-block" name="button-form-login" data-bs-toggle="modal"
+                            data-bs-target="#modal_login">
+                            <img alt="" class="icon" src="{% static 'header/profile.svg' %}" />
+                            <p class="icon-text-header">Вход</p>
+                        </button>
+                        {% endif %}
+                        <a id="orders" href="{% url 'user:orders'%}" class="icon-block"
+                            user="{{ user.is_authenticated}}">
+                            <img alt="" class="icon" src="{% static 'header/old_orders.svg' %}" />
+                            <p class="icon-text-header">Заказы</p>
+                        </a>
+                        <a id="cart" href="{% url 'user:cart'%}" class="icon-block" user="{{ user.is_authenticated}}">
+                            <img alt="" class="icon" src="{% static 'header/now_order.svg' %}" />
+                            <p class="icon-text-header">Корзина</p>
+                        </a>
+                        <a id="favorite" href="{% url 'user:favorite'%}" class="icon-block"
+                            user="{{ user.is_authenticated}}">
+                            <img alt="" class="icon" src="{% static 'header/favorite.svg' %}" />
+                            <p class="icon-text-header">Избранное</p>
+                        </a>
                     </div>
                 </div>
-                <div id="myDropdown" class="dropdown-content">
-                    {% for category in categorys %}
-                    <a href="{% url 'products:category' category.id %}">{{category.name}}</a>
-                    {% endfor %}
-                </div>
-            </button>
-            <form id="search-form" method="post" action="{% url 'products:search'%}">
-                {% csrf_token %}
-                <div class="input">
-                    <input type="text" class="search" name="search_product" value="{{ search_word }}" required
-                        placeholder="Поиск">
-                    <input type="submit" hidden />
-                    <div class="arrow-icon">
-                        <img alt="" class="vector" src="{% static 'header/search.svg' %}" />
-                    </div>
-                </div>
-            </form>
-            <div class="icons-block">
-                {% if user.is_authenticated %}
-                <a id="profile" href="{% url 'user:profile'%}" class="icon-block">
-                    <img alt="" class="icon" src="{% static 'header/profile.svg' %}" />
-                    <p class="icon-text-header">Профиль</p>
-                </a>
-                {% else %}
-                <a id="profile" href="{% url 'user:login'%}" class="icon-block" name="button-form-login">
-                    <img alt="" class="icon" src="{% static 'header/profile.svg' %}" />
-                    <p class="icon-text-header">Вход</p>
-                </a>
-                {% endif %}
-                <a id="orders" href="{% url 'user:orders'%}" class="icon-block" user="{{ user.is_authenticated}}">
-                    <img alt="" class="icon" src="{% static 'header/old_orders.svg' %}" />
-                    <p class="icon-text-header">Заказы</p>
-                </a>
-                <a id="cart" href="{% url 'user:cart'%}" class="icon-block" user="{{ user.is_authenticated}}">
-                    <img alt="" class="icon" src="{% static 'header/now_order.svg' %}" />
-                    <p class="icon-text-header">Корзина</p>
-                </a>
             </div>
         </div>
     </div>

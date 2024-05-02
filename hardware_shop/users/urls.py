@@ -23,6 +23,11 @@ urlpatterns = [
     path(
         'review/<int:product_id>/', views.review, name='review'
     ),
+    path(
+        'review/<int:product_id>/<int:comment_id>/',
+        views.delete_review,
+        name='delete_review'
+    ),
 ]
 
 """Авторизация"""

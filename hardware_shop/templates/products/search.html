@@ -2,100 +2,96 @@
 {% load customtags %}
 {% load thumbnail %}
 {% block content %}
-<div class="main-block">
-    <p class="enter_text">Поиск</p>
-</div>
 <script>
-    // После нажатия нужной сортировки она применяется в строке поиска
+    // Клик по сортировке отправляет форму
     $(function () {
-        $(".active-filter, .in-active-filter").click(function (e) {
-            e.preventDefault();
-            search_form = document.getElementById('search-form')
-            search_form.setAttribute('action', $(this).attr('href'))
-            search_form.submit()
+        $('.sort').click(function () {
+            sort_name = $(this).attr('name')
+            $('#sort_input').attr('value', sort_name)
+            $('#set-filter').click()
+            return false
+        });
+    });
+    // Клик по странице отправляет форму
+    $(function () {
+        $('.page-item').click(function () {
+            selected_page = $(this).attr('href').slice(-1)
+            $('#page_input').attr('value', selected_page)
+            $('#set-filter').click()
+            return false
+        });
+    });
+    // Перед отправкой формы запомним слово
+    $(function () {
+        $('#set-filter').click(function () {
+            word = $('#search-form .input .search').attr('value')
+            $('#word_input').attr('value', word)
         });
     });
 </script>
-<div class="main-block" name="list">
+<div class="main-block container d-block" name="list">
+    <p class="enter_text">Поиск</p>
+    <form id="filter-price" method="post" action="{% url 'products:search' %}">
+        {% csrf_token %}
+        <button id="set-filter" type="submit" class="button-signup" name="apply" hidden>
+        </button>
+        <input id="sort_input" name="sort_type" value="{{ now_sort }}" hidden>
+        <input id="page_input" name="select_page" value="{{ page_obj.number }}" hidden>
+        <input id="word_input" name="search_product" value="{{ page_obj.number }}" hidden>
+    </form>
     <div>
         <div class="icons-block">
-            <a class="{% if now_sort == 'popular' %}active-filter{% else %}in-active-filter{% endif %}" name="popular"
-                href="{% url 'products:search_sort' 'popular' %}">
+            <a class="sort {% if now_sort == 'popular' %}active-filter{% else %}in-active-filter{% endif %}"
+                name="popular" href="{% url 'products:search' %}">
                 <p>Популярные</p>
             </a>
-            <a class="{% if now_sort == 'min_price' %}active-filter{% else %}in-active-filter{% endif %}"
-                name="min_price" href="{% url 'products:search_sort' 'min_price' %}">
+            <a class="sort {% if now_sort == 'min_price' %}active-filter{% else %}in-active-filter{% endif %}"
+                name="min_price" href="{% url 'products:search' %}">
                 <p>Дешевле</p>
             </a>
-            <a class="{% if now_sort == 'max_price' %}active-filter{% else %}in-active-filter{% endif %}"
-                name="max_price" href="{% url 'products:search_sort' 'max_price' %}">
+            <a class="sort {% if now_sort == 'max_price' %}active-filter{% else %}in-active-filter{% endif %}"
+                name="max_price" href="{% url 'products:search' %}">
                 <p>Дороже</p>
             </a>
-            <a class="{% if now_sort == 'alphabet' %}active-filter{% else %}in-active-filter{% endif %}" name="alphabet"
-                href="{% url 'products:search_sort' 'alphabet' %}">
+            <a class="sort {% if now_sort == 'alphabet' %}active-filter{% else %}in-active-filter{% endif %}"
+                name="alphabet" href="{% url 'products:search' %}">
                 <p>По алфавиту</p>
             </a>
         </div>
-        {% for row in page_obj %}
         <div class="row">
-            {% for product in row %}
-            <div class="card">
-                <a class="image" href="{% url 'products:product' product.id %}">
-                    {% thumbnail product.main_image "278x208" crop="center" upscale=True as product_image %}
-                    <img src="{{ product_image.url }}" />
-                    {% endthumbnail %}
-                </a>
-                <div class="card-down">
-                    <div class="card-description">
-                        <p class="popular-text">
-                            {{ product.name }}
-                        </p>
-                        <div class="price-field">
-                            <p class="price">{{ product.price }} ₽</p>
-                            <div class="rating-mini">
-                                {% if product.score == 1 %}
-                                <span class="active"></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                {% elif product.score == 2 %}
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                {% elif product.score == 3 %}
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                <span></span>
-                                <span></span>
-                                {% elif product.score == 4 %}
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                <span></span>
-                                {% elif product.score == 5 %}
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                {% endif %}
+            {% for product in page_obj %}
+            <div class="col-6 col-lg-3 mb-3">
+                <div class="card">
+                    <a class="image" href="{% url 'products:product' product.id %}">
+                        {% thumbnail product.main_image "278x208" crop="center" upscale=True as product_image %}
+                        <img src="{{ product_image.url }}" />
+                        {% endthumbnail %}
+                    </a>
+                    <div class="card-down">
+                        <div class="card-description">
+                            <p class="popular-text">
+                                {{ product.name }}
+                            </p>
+                            <div class="price-field row">
+                                <p class="price col-12">{{ product.price }} ₽</p>
+                                <div class="rating-mini col-12">
+                                    <span class="{% if product.score >= 1 %}active{% endif %}"></span>
+                                    <span class="{% if product.score >= 2 %}active{% endif %}"></span>
+                                    <span class="{% if product.score >= 3 %}active{% endif %}"></span>
+                                    <span class="{% if product.score >= 4 %}active{% endif %}"></span>
+                                    <span class="{% if product.score == 5 %}active{% endif %}"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="in-cart">
-                        {% include 'products/in-out_cart.html' %}
-                        {% include 'products/in-out_favorite.html' %}
+                        <div class="in-cart">
+                            {% include 'products/in-out_cart.html' %}
+                            {% include 'products/in-out_favorite.html' %}
+                        </div>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
-        {% endfor %}
         {% include 'includes/paginator.html' %}
     </div>
 </div>

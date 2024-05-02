@@ -3,11 +3,16 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Строительный магазин "Тест сайт"</title>
-<link rel="stylesheet" href="{% static 'style.css' %}">
+<link href="{% static 'css/style.css' %}" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
     integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/owl.carousel.css' %}" rel="stylesheet">
+<link href="{% static 'css/owl.theme.default.min.css' %}" rel="stylesheet">
+<script src="{% static 'js/jquery.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="{% static 'js/owl.carousel.min.js' %}"></script>
 <script>
     // Добавление и удаление show выбранных элемент-id
     $(document).ready(function () {
@@ -15,41 +20,12 @@
             document.getElementById("myDropdown").classList.toggle("show");
         });
     });
-    $(function () {
-        $('#profile, #profile-link').click(function () {
-            document.getElementById("blackout").classList.toggle("show");
-            document.getElementById("window_form").classList.toggle("show");
-            $('#' + $(this).attr('name')).addClass("show");
-            return false;
-        })
-    });
-</script>
-<script>
-    // Клик по черному фону выходит из профиля/авторизации
-    $(document).ready(function () {
-        $('#blackout').click(function () {
-            $("#window_form").removeClass("show");
-            $("#blackout").removeClass("show");
-            $(".success-order").removeClass("show");
-        });
-    });
-</script>
-<script>
-    // Нажатие enter подтверждает форму поиска
-    $(function () {
-        $('.search').keydown(function (event) {
-            if (event.keyCode == 13) {
-                this.form.submit();
-                return false;
-            }
-        });
-
-    });
 </script>
 <script>
     // Передача данных на сервер
     $(document).on("submit", "#button-form-login, #button-form-signup, #button-form-profile", function () {
         var name = $(this).attr('name')
+        var parent = $(this).parent()
         $.ajax({
             type: 'POST',
             url: $(this).attr('action'),
@@ -62,8 +38,7 @@
                         toastr.success("Данные сохранены")
                     } else {
                         $('#button-form-' + name).remove()
-                        $('#window_form').append(html)
-                        $('#button-form-' + name).addClass("show");
+                        parent.append(html)
                     }
                 }
             }
@@ -71,7 +46,6 @@
         return false;
     });
 </script>
-
 {% if user.is_authenticated %}
 <script>
     // Клик авторизованного по корзине/избранному
@@ -109,27 +83,12 @@
         });
     });
     $(function () {
-        $('#orders, #cart').click(function () {
+        $('#orders, #cart, #favorite').click(function () {
             if ($(this).attr("user") == 'False') {
                 toastr.error("Войдите или зарегистрируйтесь!")
                 return false
             }
         });
-    });
-</script>
-<script>
-    //Нажатие Регистрация в форме логина и Логин в форме регистрации меняет форму
-    $(document).on("click", ".button-switch", function () {
-        if ($(this).attr('name') == 'signup') {
-            document.getElementById("profile").setAttribute("name", "button-form-signup");
-            document.getElementById("profile-link").setAttribute("name", "button-form-signup");
-        } else {
-            document.getElementById("profile").setAttribute("name", "button-form-login");
-            document.getElementById("profile-link").setAttribute("name", "button-form-login");
-        }
-        document.getElementById("button-form-login").classList.toggle("show");
-        document.getElementById("button-form-signup").classList.toggle("show");
-        return false
     });
 </script>
 {% endif %}

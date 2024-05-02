@@ -12,18 +12,10 @@ urlpatterns = [
         'search', views.search, name='search'
     ),
     path(
-        'search/<str:sort>', views.search, name='search_sort'
-    ),
-    path(
         'change_cart', views.change_cart, name='change_cart'
     ),
     path(
         'change_favorite', views.change_favorite, name='change_favorite'
-    ),
-    path(
-        'category/<int:category_id>/<str:sort>/<str:filter_str>',
-        views.category,
-        name='sort'
     ),
     path(
         'category/<int:category_id>/', views.category, name='category'

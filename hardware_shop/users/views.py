@@ -1,15 +1,6 @@
 import django.contrib.auth as auth
-# import (
-#     LoginView,
-#     LogoutView,
-#     PasswordChangeView,
-#     PasswordResetView,
-#     PasswordChangeDoneView,
-#     PasswordResetDoneView,
-#     PasswordResetConfirmView,
-#     PasswordResetCompleteView
-# )
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.http import JsonResponse
@@ -74,7 +65,7 @@ def profile(request):
 @login_required
 def orders(request):
     user = request.user
-    orders = user.order.filter(close=True)
+    orders = user.order.filter(~Q(close='0'))
     product_order = [order.product_order.all() for order in orders]
     page_obj = paginator(
         request,
@@ -93,7 +84,7 @@ def orders(request):
 @login_required
 def cart(request):
     user = request.user
-    user_order = user.order.filter(close=False)[0]
+    user_order = user.order.filter(close='0')[0]
     cart = user_order.product_order.all()
     final_amount = sum([obj.quantity for obj in cart])
     final_price = sum([obj.product.price*obj.quantity for obj in cart])
@@ -159,9 +150,13 @@ def cart(request):
 
 
 @login_required
-def favorite(request, sort='popular'):
+def favorite(request, sort='popular', select_page=1):
     user = request.user
     favorite_products = user.favorite_products.all()
+    if request.method == 'POST':
+        data = request.POST
+        sort = data.get('sort_type', sort)
+        select_page = data.get('select_page', select_page)
     if sort == 'popular':
         favorite_products = favorite_products.order_by('score')
     elif sort == 'alphabet':
@@ -172,7 +167,8 @@ def favorite(request, sort='popular'):
         favorite_products = favorite_products.order_by('price').reverse()
     page_obj = paginator(
         request,
-        [favorite_products[i:i+3] for i in range(0, len(favorite_products), 3)]
+        favorite_products,
+        select_page
     )
     context = {
         'now_sort': sort,
@@ -232,3 +228,16 @@ def review(request, product_id):
         product.save()
         return JsonResponse(status=HTTPStatus.OK, data={})
     return reverse_lazy('products:index')
+
+
+@login_required
+def delete_review(request, product_id, comment_id):
+    comment = get_object_or_404(Review, id=comment_id)
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST' and request.user == comment.user:
+        comment.delete()
+        score_list = [review.score for review in product.review.all()]
+        product.score = sum(score_list) / len(score_list)
+        product.save()
+        return redirect('products:product', product_id=product_id)
+    return redirect('products:product product_id', product_id=product_id)

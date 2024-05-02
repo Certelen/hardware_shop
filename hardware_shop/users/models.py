@@ -1,5 +1,12 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, UnicodeUsernameValidator
+from django.contrib.auth.models import (
+    AbstractUser,
+    UnicodeUsernameValidator,
+    Group,
+    Permission
+)
+from django.db.models import Q
+from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.dispatch import receiver
@@ -8,6 +15,13 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 from products.models import Product
 from .managers import UserManager
+
+order_status = [
+    ('0', 'Не оформлен пользователем'),
+    ('1', 'В работе'),
+    ('2', 'Отправлен'),
+    ('3', 'Отменён'),
+]
 
 
 class CustomUser(AbstractUser):
@@ -68,6 +82,24 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.email
 
+    def save(self, force_insert=False, force_update=False, *args, **kwargs):
+        """
+        Автоматическое создание группы Менеджер
+        """
+        super(CustomUser, self).save(
+            force_insert, force_update, *args, **kwargs)
+        if not Group.objects.filter(name='Менеджер'):
+            order_permissions = Permission.objects.filter(
+                content_type=ContentType.objects.get_for_model(Order)
+            )
+            order_permissions = order_permissions.filter(
+                Q(codename='view_order') | Q(codename='change_order')
+            )
+            manager = Group.objects.create(
+                name='Менеджер'
+            )
+            manager.permissions.add(*order_permissions)
+
 
 class Review(models.Model):
     user = models.ForeignKey(
@@ -127,10 +159,11 @@ class Order(models.Model):
         max_length=50,
         blank=True
     )
-    close = models.BooleanField(
-        'Возможность изменять заказ',
-        help_text='Возможность изменять заказ',
-        default=False,
+    close = models.CharField(
+        'Статус заказа',
+        max_length=50,
+        default=0,
+        choices=order_status
     )
     products = models.ManyToManyField(
         Product,
@@ -148,7 +181,7 @@ class Order(models.Model):
         verbose_name_plural = 'Заказы'
 
     def __str__(self):
-        return f'Заказ {self.user}, {"Закрыт" if self.close else "Не закрыт"}'
+        return f'Заказ {self.user}, {self.get_close_display()}'
 
     @receiver(post_save, sender=CustomUser)
     def create_first_user_order(sender, instance, created, **kwargs):

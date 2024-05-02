@@ -1,6 +1,5 @@
 <form id="button-form-login" class="login-block" name="login" method="post" action="{% url 'user:login'%}">
     {% csrf_token %}
-    <p class="enter_text">Вход</p>
     <div id="form-error-login" class="form-error">
         {{ login_form.non_field_errors }}
         {% for field in login_form %}
@@ -19,7 +18,8 @@
         <button type="submit" class="button-login">
             <p>Войти</p>
         </button>
-        <button class="button-switch" name="signup">
+        <button type="button" class="button-switch" data-bs-target="#modal_signup" data-bs-toggle="modal"
+            data-bs-dismiss="modal">
             <p>Создать учетную запись</p>
         </button>
     </div>

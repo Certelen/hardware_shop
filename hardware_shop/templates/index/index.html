@@ -3,86 +3,78 @@
 {% load customtags %}
 {% load thumbnail %}
 {% block content %}
-<div class="main-block">
+<div class="main-block d-none d-lg-block container">
     <p class="categorys-text">Категории</p>
-    {% with categorys|chunk_list:5 as chunks %}
-    {% for chunk in chunks %}
-    <div class="category-row">
-        {% for category in chunk %}
-        <div class="category">
-            <a href="{% url 'products:category' category.id %}">
-                <p class="category-text">{{ category.name }}</p>
-                {% thumbnail category.image "180x128" crop="center" upscale=True as category_image %}
-                <img class="image" src="{{ category_image.url }}" />
-                {% endthumbnail %}
-            </a>
-        </div>
-        {% endfor %}
-    </div>
-    {% endfor %}
-    {% endwith %}
-</div>
-<div class="main-block">
-    <p class="categorys-text">Популярные товары</p>
-    <div class="popular">
-        {% for product in popular %}
-        <div class="card">
-            <a class="image" href="{% url 'products:product' product.id %}">
-                {% thumbnail product.main_image "278x208" crop="center" upscale=True as product_image %}
-                <img src="{{ product_image.url }}" />
-                {% endthumbnail %}
-            </a>
-            <div class="card-down">
-                <div class="card-description">
-                    <p class="popular-text">
-                        {{ product.name }}
-                    </p>
-                    <div class="price-field">
-                        <p class="price">{{ product.price }} ₽</p>
-                        <div class="rating-mini">
-                            {% if product.score == 1 %}
-                            <span class="active"></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            {% elif product.score == 2 %}
-                            <span class="active"></span>
-                            <span class="active"></span>
-                            <span></span>
-                            <span></span>
-                            <span></span>
-                            {% elif product.score == 3 %}
-                            <span class="active"></span>
-                            <span class="active"></span>
-                            <span class="active"></span>
-                            <span></span>
-                            <span></span>
-                            {% elif product.score == 4 %}
-                            <span class="active"></span>
-                            <span class="active"></span>
-                            <span class="active"></span>
-                            <span class="active"></span>
-                            <span></span>
-                            {% elif product.score == 5 %}
-                            <span class="active"></span>
-                            <span class="active"></span>
-                            <span class="active"></span>
-                            <span class="active"></span>
-                            <span class="active"></span>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-                <div class="in-cart">
-
-                    {% include 'products/in-out_cart.html' %}
-                    {% include 'products/in-out_favorite.html' %}
-
-                </div>
+    <div class="category-row row">
+        <div class="col-1"></div>
+        {% for category in categorys %}
+        <div class="col-2 mb-4">
+            <div class="category">
+                <a href="{% url 'products:category' category.id %}">
+                    <p class="category-text">{{ category.name }}</p>
+                    {% thumbnail category.image "180x128" crop="center" upscale=True as category_image %}
+                    <img class="image" src="{{ category_image.url }}" />
+                    {% endthumbnail %}
+                </a>
             </div>
         </div>
+        {% if forloop.counter|divisibleby:"5" and not forloop.first and not forloop.last %}
+        <div class="col-1"></div>
+        <div class="col-1"></div>
+        {% elif forloop.last %}
+        <div class="col-1"></div>
+        {% endif %}
         {% endfor %}
     </div>
 </div>
+<div class="main-block container">
+    <p class="categorys-text">Популярные товары</p>
+    <div class="popular row">
+        <div id="carouselRecommendations" class="owl-carousel">
+            {% for product in popular %}
+            <div class="card">
+                <a class="image" href="{% url 'products:product' product.id %}">
+                    {% thumbnail product.main_image "278x208" crop="center" upscale=True as product_image %}
+                    <img src="{{ product_image.url }}" />
+                    {% endthumbnail %}
+                </a>
+                <div class="card-down">
+                    <div class="card-description">
+                        <p class="popular-text">
+                            {{ product.name }}
+                        </p>
+                        <div class="price-field">
+                            <span class="price">{{ product.price }} ₽</span>
+                            <div class="rating-mini">
+                                <span class="{% if product.score >= 1 %}active{% endif %}"></span>
+                                <span class="{% if product.score >= 2 %}active{% endif %}"></span>
+                                <span class="{% if product.score >= 3 %}active{% endif %}"></span>
+                                <span class="{% if product.score >= 4 %}active{% endif %}"></span>
+                                <span class="{% if product.score == 5 %}active{% endif %}"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="in-cart">
+
+                        {% include 'products/in-out_cart.html' %}
+                        {% include 'products/in-out_favorite.html' %}
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $(".owl-carousel").owlCarousel({
+            autoWidth: true,
+            margin: 10,
+            nav: false,
+            dots: false
+        });
+    });
+</script>
 {% endblock %}

@@ -4,12 +4,12 @@
     {% csrf_token %}
     {% if product.id in now_order %}
     <button type="submit" class="button-in-cart" name="cart" style="background-color: rgb(219 255 101);">
-        <p>В корзине</p>
+        <span>В корзине</span>
     </button>
     <input type="text" name="in_cart" value="True" hidden>
     {% else %}
     <button type="submit" class="button-in-cart" name="cart">
-        <p>В корзину</p>
+        <span>В корзину</span>
     </button>
     <input type="text" name="in_cart" value="False" hidden>
     {% endif %}
@@ -20,7 +20,7 @@
 {% else %}
 <div class=" out-stock">
     <div class="out-stock-text-block">
-        <p>Нет в наличии</p>
+        <span>Нет в наличии</span>
     </div>
 </div>
 {% endif %}

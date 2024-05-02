@@ -2,12 +2,37 @@
 {% load customtags %}
 {% load thumbnail %}
 {% block content %}
-<div class="main-block">
+<script>
+    // Клик по сортировке отправляет форму
+    $(function () {
+        $('.sort').click(function () {
+            sort_name = $(this).attr('name')
+            $('#sort_input').attr('value', sort_name)
+            $('#set-filter').click()
+            return false
+        });
+    });
+    // Клик по странице отправляет форму
+    $(function () {
+        $('.page-item').click(function () {
+            selected_page = $(this).attr('href').slice(-1)
+            $('#page_input').attr('value', selected_page)
+            $('#set-filter').click()
+            return false
+        });
+    });
+</script>
+<div class="main-block container d-block" style="align-items: center;">
     <p class="enter_text">Избранное</p>
-</div>
-<div class="main-block" style="align-items: center;">
+    <form id="filter-price" method="post" action="{% url 'user:favorite' %}">
+        {% csrf_token %}
+        <button id="set-filter" type="submit" class="button-signup" name="apply" hidden>
+        </button>
+        <input id="sort_input" name="sort_type" value="{{ now_sort }}" hidden>
+        <input id="page_input" name="select_page" value="{{ page_obj.number }}" hidden>
+    </form>
     <div>
-        <div class="icons-block">
+        <div class="icons-block justify-content-around">
             <a class="{% if now_sort == 'popular' %}active-filter{% else %}in-active-filter{% endif %}" name="popular"
                 href="{% url 'user:sort' 'popular' %}">
                 <p>Популярные</p>
@@ -25,66 +50,40 @@
                 <p>По алфавиту</p>
             </a>
         </div>
-        {% for row in page_obj %}
         <div class="row">
-            {% for product in row %}
-            <div class="card">
-                <a class="image" href="{% url 'products:product' product.id %}">
-                    {% thumbnail product.main_image "278x208" crop="center" upscale=True as product_image %}
-                    <img src="{{ product_image.url }}" />
-                    {% endthumbnail %}
-                </a>
-                <div class="card-down">
-                    <div class="card-description">
-                        <p class="popular-text">
-                            {{ product.name }}
-                        </p>
-                        <div class="price-field">
-                            <p class="price">{{ product.price }} ₽</p>
-                            <div class="rating-mini">
-                                {% if product.score == 1 %}
-                                <span class="active"></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                {% elif product.score == 2 %}
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                                {% elif product.score == 3 %}
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                <span></span>
-                                <span></span>
-                                {% elif product.score == 4 %}
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                <span></span>
-                                {% elif product.score == 5 %}
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                <span class="active"></span>
-                                {% endif %}
+            {% for product in page_obj %}
+            <div class="col-6 col-lg-3 mb-3">
+                <div class="card">
+                    <a class="image" href="{% url 'products:product' product.id %}">
+                        {% thumbnail product.main_image "278x208" crop="center" upscale=True as product_image %}
+                        <img src="{{ product_image.url }}" />
+                        {% endthumbnail %}
+                    </a>
+                    <div class="card-down">
+                        <div class="card-description">
+                            <p class="popular-text">
+                                {{ product.name }}
+                            </p>
+                            <div class="price-field row">
+                                <p class="price col-12">{{ product.price }} ₽</p>
+                                <div class="rating-mini col-12">
+                                    <span class="{% if product.score >= 1 %}active{% endif %}"></span>
+                                    <span class="{% if product.score >= 2 %}active{% endif %}"></span>
+                                    <span class="{% if product.score >= 3 %}active{% endif %}"></span>
+                                    <span class="{% if product.score >= 4 %}active{% endif %}"></span>
+                                    <span class="{% if product.score == 5 %}active{% endif %}"></span>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="in-cart">
-                        {% include 'products/in-out_cart.html' %}
-                        {% include 'products/in-out_favorite.html' %}
+                        <div class="in-cart">
+                            {% include 'products/in-out_cart.html' %}
+                            {% include 'products/in-out_favorite.html' %}
+                        </div>
                     </div>
                 </div>
             </div>
             {% endfor %}
         </div>
-        {% endfor %}
         {% include 'includes/paginator.html' %}
     </div>
 </div>

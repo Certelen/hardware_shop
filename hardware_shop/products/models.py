@@ -41,10 +41,6 @@ class Product(models.Model):
         upload_to='products_img/',
         help_text='Изображение товара в превью',
     )
-    characteristic = models.TextField(
-        'Характеристики товара',
-        help_text='Характеристики товара',
-    )
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
@@ -88,6 +84,23 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ProductChar(models.Model):
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name='char',
+        verbose_name='Характеристики товара',
+    )
+    characteristic_name = models.CharField(
+        'Название характеристики',
+        max_length=200
+    )
+    characteristic_value = models.CharField(
+        'Значение характеристики',
+        max_length=200
+    )
 
 
 class ProductImage(models.Model):
