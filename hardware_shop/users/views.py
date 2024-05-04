@@ -224,7 +224,10 @@ def review(request, product_id):
             score=data['score']
         )
         score_list = [review.score for review in product.review.all()]
-        product.score = sum(score_list) / len(score_list)
+        if score_list:
+            product.score = sum(score_list) / len(score_list)
+        else:
+            product.score = 0
         product.save()
         return JsonResponse(status=HTTPStatus.OK, data={})
     return reverse_lazy('products:index')
@@ -237,7 +240,10 @@ def delete_review(request, product_id, comment_id):
     if request.method == 'POST' and request.user == comment.user:
         comment.delete()
         score_list = [review.score for review in product.review.all()]
-        product.score = sum(score_list) / len(score_list)
+        if score_list:
+            product.score = sum(score_list) / len(score_list)
+        else:
+            product.score = 0
         product.save()
         return redirect('products:product', product_id=product_id)
     return redirect('products:product product_id', product_id=product_id)
