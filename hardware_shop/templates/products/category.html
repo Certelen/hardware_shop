@@ -34,35 +34,57 @@
                 action="{% url 'products:category' category.id %}">
                 {% csrf_token %}
                 <div class="accordion accordion_collapse w-100 mb-3 mobile-filters" id="filters"
-                    style="overflow: hidden;">
-                    <div class="filter-block-inner">
-                        <div>
-                            <p class="filter-text">Цена</p>
-                        </div>
-                        <div class="profile-info-row">
-                            <div class="left-block">
-                                <input type="number" class="filter-input" name="min_price" placeholder="от 1 000"
-                                    value="{{min_price}}">
-                            </div>
-                            <div class="right-block">
-                                <input type="number" class="filter-input" name="max_price" placeholder="до 100 000"
-                                    value="{{max_price}}">
+                    style="border-radius: 10px; overflow: hidden;">
+                    <div class="accordion-item">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <span>Цена</span>
+                        </button>
+                        <div id="collapseOne" class="filter-block-inner accordion-collapse collapse"
+                            aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                            <div class="profile-info-row">
+                                <div class="left-block">
+                                    <input type="number" class="filter-input" name="min_price" placeholder="от 1 000"
+                                        value="{{min_price}}">
+                                </div>
+                                <div class="right-block">
+                                    <input type="number" class="filter-input" name="max_price" placeholder="до 100 000"
+                                        value="{{max_price}}">
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="filter-block-inner">
-                        <div>
-                            <button id="set-filter" type="submit" class="button-signup" name="apply">
-                                <p>Применить</p>
-                            </button>
-                            <button type="submit" class="button-reset" name="reset">
-                                <p>Сбросить</p>
-                            </button>
-                            <input id="sort_input" name="sort_type" value="{{ now_sort }}" hidden>
-                            <input id="page_input" name="select_page" value="{{ page_obj.number }}" hidden>
+                    {% for filter_name, filter_value in filters.items %}
+                    <div class="accordion-item">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse{{ forloop.counter }}" aria-expanded="true"
+                            aria-controls="collapse{{ forloop.counter }}">
+                            <span>{{filter_name}}</span>
+                        </button>
+                        <div id="collapse{{ forloop.counter }}" class="filter-block-inner accordion-collapse collapse"
+                            aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                            {% for name_key, checked in filter_value.items %}
+                            <div class="form-check">
+                                <input class="form-check-input p-0" type="checkbox" id="{{filter_name}}-{{name_key}}"
+                                    name="filters" value="{{filter_name}}, {{name_key}}" blank blank blank blank blank
+                                    {% if checked %} checked {% endif %}>
+                                <label class="form-check-label" for="{{filter_name}}-{{name_key}}">
+                                    {{ name_key }}
+                                </label>
+                            </div>
+                            {% endfor %}
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
+                <button id="set-filter" type="submit" class="button-signup" name="apply">
+                    <p>Применить</p>
+                </button>
+                <button type="submit" class="button-reset" name="reset">
+                    <p>Сбросить</p>
+                </button>
+                <input id="sort_input" name="sort_type" value="{{ now_sort }}" hidden>
+                <input id="page_input" name="select_page" value="{{ page_obj.number }}" hidden>
             </form>
         </div>
         <div class="col-12 col-lg-9">

@@ -26,7 +26,33 @@ class Category(models.Model):
         return self.name
 
 
+class CategoryChar(models.Model):
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name='char',
+        verbose_name='Характеристики категории',
+    )
+    characteristic_name = models.CharField(
+        'Название характеристики',
+        max_length=200
+    )
+
+    class Meta:
+        verbose_name = 'Харатеристики категории'
+        verbose_name_plural = 'Харатеристика категории'
+
+    def __str__(self):
+        return f'{self.characteristic_name} категории {self.category.name}'
+
+
 class Product(models.Model):
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name='product',
+        verbose_name='Категория товара',
+    )
     name = models.CharField(
         'Название товара',
         help_text='Название товара',
@@ -40,12 +66,6 @@ class Product(models.Model):
         'Изображение товара в превью',
         upload_to='products_img/',
         help_text='Изображение товара в превью',
-    )
-    category = models.ForeignKey(
-        Category,
-        on_delete=models.CASCADE,
-        related_name='product',
-        verbose_name='Категория товара',
     )
     company = models.CharField(
         'Компания производящая товар',
@@ -101,6 +121,13 @@ class ProductChar(models.Model):
         'Значение характеристики',
         max_length=200
     )
+
+    class Meta:
+        verbose_name = 'Харатеристики товара'
+        verbose_name_plural = 'Харатеристики товаров'
+
+    def __str__(self):
+        return f'{self.characteristic_name} товара {self.product.name}'
 
 
 class ProductImage(models.Model):

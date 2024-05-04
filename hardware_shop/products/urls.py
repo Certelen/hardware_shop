@@ -17,6 +17,7 @@ urlpatterns = [
     path(
         'change_favorite', views.change_favorite, name='change_favorite'
     ),
+    path('category_char/<int:category_id>/', views.get_category_char),
     path(
         'category/<int:category_id>/', views.category, name='category'
     ),

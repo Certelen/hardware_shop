@@ -131,7 +131,7 @@ def cart(request):
             user.save()
         user_order.number = user.phone
         user_order.address = address
-        user_order.close = True
+        user_order.close = 1
         user_order.close_data = date.today()
         user_order.save()
         Order.objects.create(user=user)

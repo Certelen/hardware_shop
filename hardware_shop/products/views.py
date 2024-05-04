@@ -13,8 +13,10 @@ from .forms import SearchForm
 from hardware_shop.settings import MAX_ROW_ON_PAGE
 
 
-def paginator(request, products, page_number):
+def paginator(request, products, page_number=False):
     paginator = Paginator(products, MAX_ROW_ON_PAGE)
+    if not page_number:
+        page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
     return page_obj
 
@@ -51,7 +53,6 @@ def index(request):
         list(context.items()) +
         list(context_forms(request).items())
     )
-    print(request.user.groups.all())
     return render(request, 'index/index.html', context)
 
 
@@ -178,17 +179,36 @@ def change_favorite(request):
     return reverse_lazy('products:index')
 
 
+def get_category_char(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    category_char = category.char.values_list('characteristic_name', flat=True)
+    return JsonResponse(
+        status=HTTPStatus.OK,
+        data={'char': list(category_char)}
+    )
+
+
 def category(request, category_id, sort='popular', select_page=1):
     category = get_object_or_404(Category, id=category_id)
     products = category.product.all()
     filter_status = {}
+    filters = {}
+    for char in category.char.all():
+        char = char.characteristic_name
+        for product in products:
+            product_char = product.char.filter(characteristic_name=char)
+            for char_value in product_char:
+                if char in filters:
+                    filters[char][char_value.characteristic_value] = False
+                else:
+                    filters[char] = {char_value.characteristic_value: False}
     if request.method == "POST":
         data = request.POST
-        print(data)
         if 'apply' in data:
             min_price = data['min_price']
             max_price = data['max_price']
             sort = data['sort_type']
+            filters_data = data.getlist('filters')
             select_page = int(data['select_page'])
             if min_price or max_price:
                 if not min_price:
@@ -206,6 +226,18 @@ def category(request, category_id, sort='popular', select_page=1):
                     'min_price': min_price,
                     'max_price': max_price,
                 }
+            if filters_data:
+                for filter_value in filters_data:
+                    char_name, char_value = filter_value.split(', ')
+                    products = products.filter(
+                        char__characteristic_name=char_name
+                    )
+                    products = products.filter(
+                        char__characteristic_value=char_value
+                    )
+                    print(products)
+                    filters[char_name][char_value] = True
+
         elif 'reset' in data:
             filter_status = {'filter': False}
     if sort == 'popular':
@@ -224,7 +256,8 @@ def category(request, category_id, sort='popular', select_page=1):
     context = {
         'now_sort': sort,
         'page_obj': page_obj,
-        'category': category
+        'category': category,
+        'filters': filters
     }
     context = dict(
         list(context.items()) +
