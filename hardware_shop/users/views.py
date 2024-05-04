@@ -48,13 +48,17 @@ def profile(request):
         if form.is_valid():
             form = form.save(commit=False)
             form.save()
+            data = {}
             if (request.POST['password1'] and
                     request.POST['password1'] == request.POST['password2']):
                 new_password = request.POST['password1']
                 user = CustomUser.objects.get(email=request.user.email)
                 user.set_password(new_password)
                 user.save()
-            return JsonResponse(status=HTTPStatus.OK, data={'update': True})
+                auth.login(request, user)
+                data = {'update_pass': True}
+            data['update'] = True
+            return JsonResponse(status=HTTPStatus.OK, data=data)
         context = {
             'profile_form': form
         }

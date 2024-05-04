@@ -36,6 +36,14 @@
                 } else {
                     if (html['update']) {
                         toastr.success("Данные сохранены")
+                        if (html['update_pass']) {
+                            setTimeout(
+                                () => {
+                                    location.reload(true)
+                                },
+                                2000
+                            );
+                        }
                     } else {
                         $('#button-form-' + name).remove()
                         parent.append(html)

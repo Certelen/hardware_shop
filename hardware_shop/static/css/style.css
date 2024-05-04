@@ -1207,3 +1207,7 @@ input::placeholder {
 #id_price_range_1::placeholder {
     content: 999999;
 }
+
+.toast-success {
+    background-color: green !important;
+}
