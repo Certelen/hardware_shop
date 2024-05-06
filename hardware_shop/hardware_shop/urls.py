@@ -3,8 +3,6 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from about import views
-
 handler404 = 'products.views.page_not_found'
 
 urlpatterns = [
@@ -13,7 +11,6 @@ urlpatterns = [
     # path('about/', include('about.urls', namespace='about')),
     path('', include('products.urls', namespace='products')),
     path('my/', include('users.urls', namespace='user')),
-    path('about', views.AboutView.as_view(), name='about'),
 ]
 
 urlpatterns += static(

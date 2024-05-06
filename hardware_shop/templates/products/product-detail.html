@@ -118,97 +118,109 @@
     </div>
 </div>
 <div class="main-block container mb-3">
-    <div class="row description-main-block">
-        <h2 class="col-12">Описание</h2>
-        <p id="description-text" class="col-12">{{ product.description }}</p>
+    <div class="row">
+        <div>
+            <div class="description-main-block px-3">
+                <h2 class="col-12">Описание</h2>
+                <p id="description-text" class="col-12">{{ product.description }}</p>
+            </div>
+        </div>
     </div>
 </div>
 <div class="main-block container mb-3">
-    <div class="row description-main-block">
-        <h2 class="col-12">Характеристики</h2>
-        {% for char in chars %}
-        <div class="d-flex">
-            <span>{{ char.characteristic_name }} : {{ char.characteristic_value }}</p>
+    <div class="row">
+        <div>
+            <div class="description-main-block px-3">
+                <h2 class="col-12">Характеристики</h2>
+                {% for char in chars %}
+                <div class="d-flex">
+                    <span class="mb-2">{{ char.characteristic_name }}: {{ char.characteristic_value }}</span>
+                </div>
+                {% endfor %}
+            </div>
         </div>
-        {% endfor %}
     </div>
 </div>
 {% if user.is_authenticated %}
 <div class="main-block container mb-3">
     <form id="comment-form" class="row" method="post" action="{% url 'user:review' product.id %}">
         {% csrf_token %}
-        <div id="comment-block" class=" description-main-block">
-            <h2 class="col-12">Оставить комментарий:</h2>
-            <div class="d-flex row col-12 mb-2">
-                <div class="d-flex justify-content-center align-items-center col-12 col-lg-9">
-                    <input type="text" name="title" class="py-2" style="margin: 0 10px;" placeholder="Заголовок">
+        <div>
+            <div id="comment-block" class=" description-main-block px-3">
+                <h2 class="col-12">Оставить комментарий:</h2>
+                <div class="d-flex row col-12 mb-2">
+                    <div class="d-flex justify-content-center align-items-center col-12 col-lg-9">
+                        <input type="text" name="title" class="py-2" style="margin: 0 10px;" placeholder="Заголовок">
+                    </div>
+                    <div class="rating-area col-12 col-lg-3" style="width: max-content;">
+                        <input type="radio" id="star-5" name="score" checked="checked" value="5">
+                        <label for="star-5" title="Оценка «5»"></label>
+                        <input type="radio" id="star-4" name="score" value="4">
+                        <label for="star-4" title="Оценка «4»"></label>
+                        <input type="radio" id="star-3" name="score" value="3">
+                        <label for="star-3" title="Оценка «3»"></label>
+                        <input type="radio" id="star-2" name="score" value="2">
+                        <label for="star-2" title="Оценка «2»"></label>
+                        <input type="radio" id="star-1" name="score" value="1">
+                        <label for="star-1" title="Оценка «1»"></label>
+                    </div>
                 </div>
-                <div class="rating-area col-12 col-lg-3" style="width: max-content;">
-                    <input type="radio" id="star-5" name="score" checked="checked" value="5">
-                    <label for="star-5" title="Оценка «5»"></label>
-                    <input type="radio" id="star-4" name="score" value="4">
-                    <label for="star-4" title="Оценка «4»"></label>
-                    <input type="radio" id="star-3" name="score" value="3">
-                    <label for="star-3" title="Оценка «3»"></label>
-                    <input type="radio" id="star-2" name="score" value="2">
-                    <label for="star-2" title="Оценка «2»"></label>
-                    <input type="radio" id="star-1" name="score" value="1">
-                    <label for="star-1" title="Оценка «1»"></label>
-                </div>
+                <textarea id="comment-area" class="col-12 mb-2 p-1" name="text"></textarea>
+                <button id="comment-button" type="submit" class="btn btn-primary col-12 mb-3" style="color: black;">
+                    <span style="font-weight: 600;">
+                        Сохранить
+                    </span>
+                </button>
             </div>
-            <textarea id="comment-area" class="col-12 mb-2 p-1" name="text"></textarea>
-            <button id="comment-button" type="submit" class="btn btn-primary col-12 mb-3" style="color: black;">
-                <span style="font-weight: 600;">
-                    Сохранить
-                </span>
-            </button>
         </div>
     </form>
 </div>
 {% endif %}
-<div id="description-main-block" class="main-block container" style="border: 1px solid #cfcfcf;">
+<div id="description-main-block" class="main-block container">
     <div id="comment-form" class="row">
-        {% for comment in comments %}
-        <div id="comment-block">
-            <div class="comment container">
-                <div class="row w-100" style="border: 1px solid #cfcfcf; border-bottom: unset;">
-                    <div class="col-12 col-lg-3" style="border-bottom: 1px solid #cfcfcf;">
-                        <div class="d-flex h-100 justify-content-center align-items-center"
-                            style="word-break: break-all;">
-                            <h4>{{ comment.user.username }}</h4>
+        <div>
+            <div id="comment-block">
+                {% for comment in comments %}
+                <div class="comment container">
+                    <div class="row w-100" style="border: 1px solid #cfcfcf; border-bottom: unset;">
+                        <div class="col-12 col-lg-3" style="border-bottom: 1px solid #cfcfcf;">
+                            <div class="d-flex h-100 justify-content-center align-items-center"
+                                style="word-break: break-all;">
+                                <h4>{{ comment.user.username }}</h4>
+                            </div>
+                        </div>
+                        <div class="comment-head-topic col-12 col-lg-6 align-items-center justify-content-center"
+                            style="border-bottom: 1px solid #cfcfcf; word-break: break-all;">
+                            <h5 style="font-weight: 100;">{{ comment.title }}</h5>
+                        </div>
+                        <div class="comment-head-score col-12 col-lg-3" style="border-bottom: 1px solid #cfcfcf;">
+                            <div class="rating-result">
+                                <span class="{% if comment.score >= 1 %}active{% endif %}"></span>
+                                <span class="{% if comment.score >= 2 %}active{% endif %}"></span>
+                                <span class="{% if comment.score >= 3 %}active{% endif %}"></span>
+                                <span class="{% if comment.score >= 4 %}active{% endif %}"></span>
+                                <span class="{% if comment.score == 5 %}active{% endif %}"></span>
+                            </div>
                         </div>
                     </div>
-                    <div class="comment-head-topic col-12 col-lg-6 align-items-center justify-content-center"
-                        style="border-bottom: 1px solid #cfcfcf; word-break: break-all;">
-                        <h5 style="font-weight: 100;">{{ comment.title }}</h5>
-                    </div>
-                    <div class="comment-head-score col-12 col-lg-3" style="border-bottom: 1px solid #cfcfcf;">
-                        <div class="rating-result">
-                            <span class="{% if comment.score >= 1 %}active{% endif %}"></span>
-                            <span class="{% if comment.score >= 2 %}active{% endif %}"></span>
-                            <span class="{% if comment.score >= 3 %}active{% endif %}"></span>
-                            <span class="{% if comment.score >= 4 %}active{% endif %}"></span>
-                            <span class="{% if comment.score == 5 %}active{% endif %}"></span>
+                    <div class="comment-text row w-100">
+                        <div class="p-4" style="border: 1px solid #cfcfcf; border-top: unset;">
+                            <h6 style="font-weight: 100;">{{ comment.comment }}</h6>
                         </div>
                     </div>
+                    {% if user == comment.user %}
+                    <form class="comment-text row w-100" method="post"
+                        action="{% url 'user:delete_review' product.id comment.id %}">
+                        {% csrf_token %}
+                        <button type="submit" name="delete" style="background-color: black; color: white;">
+                            Удалить отзыв
+                        </button>
+                    </form>
+                    {% endif %}
                 </div>
-                <div class="comment-text row w-100">
-                    <div class="p-4" style="border: 1px solid #cfcfcf; border-top: unset;">
-                        <h6 style="font-weight: 100;">{{ comment.comment }}</h6>
-                    </div>
-                </div>
-                {% if user == comment.user %}
-                <form class="comment-text row w-100" method="post"
-                    action="{% url 'user:delete_review' product.id comment.id %}">
-                    {% csrf_token %}
-                    <button type="submit" name="delete" style="background-color: black; color: white;">
-                        Удалить отзыв
-                    </button>
-                </form>
-                {% endif %}
+                {% endfor %}
             </div>
         </div>
-        {% endfor %}
     </div>
 </div>
 {% endblock %}

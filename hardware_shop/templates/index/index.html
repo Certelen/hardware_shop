@@ -6,10 +6,9 @@
 <div class="main-block d-none d-lg-block container">
     <p class="categorys-text">Категории</p>
     <div class="category-row row">
-        <div class="col-1"></div>
         {% for category in categorys %}
-        <div class="col-2 mb-4">
-            <div class="category">
+        <div class="col-3 mb-4">
+            <div class="category pt-3">
                 <a href="{% url 'products:category' category.id %}">
                     <p class="category-text">{{ category.name }}</p>
                     {% thumbnail category.image "180x128" crop="center" upscale=True as category_image %}
@@ -18,12 +17,6 @@
                 </a>
             </div>
         </div>
-        {% if forloop.counter|divisibleby:"5" and not forloop.first and not forloop.last %}
-        <div class="col-1"></div>
-        <div class="col-1"></div>
-        {% elif forloop.last %}
-        <div class="col-1"></div>
-        {% endif %}
         {% endfor %}
     </div>
 </div>
@@ -55,10 +48,8 @@
                         </div>
                     </div>
                     <div class="in-cart">
-
                         {% include 'products/in-out_cart.html' %}
                         {% include 'products/in-out_favorite.html' %}
-
                     </div>
                 </div>
             </div>
@@ -70,10 +61,24 @@
 <script>
     $(document).ready(function () {
         $(".owl-carousel").owlCarousel({
-            autoWidth: true,
+            items: 5,
             margin: 10,
             nav: false,
-            dots: false
+            dots: false,
+            responsive: {
+                1400: {
+                    items: 5
+                },
+                992: {
+                    items: 4
+                },
+                576: {
+                    items: 3
+                },
+                0: {
+                    items: 2
+                }
+            }
         });
     });
 </script>

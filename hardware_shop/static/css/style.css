@@ -117,6 +117,7 @@ a {
     flex-direction: column;
     align-content: center;
     justify-content: space-between;
+    border: 1px solid #cfcfcf;
 }
 
 #comment-button {
