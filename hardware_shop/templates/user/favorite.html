@@ -64,9 +64,9 @@
                             <p class="popular-text">
                                 {{ product.name }}
                             </p>
-                            <div class="price-field row">
-                                <p class="price col-12">{{ product.price }} ₽</p>
-                                <div class="rating-mini col-12">
+                            <div class="price-field">
+                                <span class="price">{{ product.price }} ₽</span>
+                                <div class="rating-mini">
                                     <span class="{% if product.score >= 1 %}active{% endif %}"></span>
                                     <span class="{% if product.score >= 2 %}active{% endif %}"></span>
                                     <span class="{% if product.score >= 3 %}active{% endif %}"></span>

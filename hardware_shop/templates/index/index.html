@@ -12,7 +12,7 @@
                 <a href="{% url 'products:category' category.id %}">
                     <p class="category-text">{{ category.name }}</p>
                     {% thumbnail category.image "180x128" crop="center" upscale=True as category_image %}
-                    <img class="image" src="{{ category_image.url }}" />
+                    <img class="image" src="{{ category_image.url }}" style: 'height: auto;' />
                     {% endthumbnail %}
                 </a>
             </div>
@@ -27,9 +27,7 @@
             {% for product in popular %}
             <div class="card">
                 <a class="image" href="{% url 'products:product' product.id %}">
-                    {% thumbnail product.main_image "278x208" crop="center" upscale=True as product_image %}
-                    <img src="{{ product_image.url }}" />
-                    {% endthumbnail %}
+                    <img src="{{ product.main_image.url }}" />
                 </a>
                 <div class="card-down">
                     <div class="card-description">

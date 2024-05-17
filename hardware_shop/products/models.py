@@ -1,6 +1,8 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+import products.validate as validator
+
 
 class Category(models.Model):
     name = models.CharField(
@@ -14,7 +16,7 @@ class Category(models.Model):
     )
     image = models.ImageField(
         'Изображение категории',
-        upload_to='categorys_img/',
+        upload_to=validator.category_image_directory_path,
         help_text='Изображение категории',
     )
 
@@ -64,7 +66,7 @@ class Product(models.Model):
     )
     main_image = models.ImageField(
         'Изображение товара в превью',
-        upload_to='products_img/',
+        upload_to=validator.product_main_image_directory_path,
         help_text='Изображение товара в превью',
     )
     company = models.CharField(
@@ -139,7 +141,7 @@ class ProductImage(models.Model):
     )
     image = models.ImageField(
         'Изображение товара',
-        upload_to='products_img/',
+        upload_to=validator.product_images_directory_path,
         help_text='Загрузка картинки'
     )
 
