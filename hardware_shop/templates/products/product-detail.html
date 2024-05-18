@@ -4,6 +4,38 @@
 {% load thumbnail %}
 {% block content %}
 <script>
+    // Изменение или удаление отзыва
+    $(function () {
+        $('.change-review-button').click(function () {
+            review = $(this).parent().parent()
+            review_id = review.attr('review_id')
+            score_value = '#star-' + review.attr('comment_score')
+
+            score = $('div.rating-area').first()
+            score_review = score.clone()
+            score_review.children('#star-5').removeAttr('checked')
+            score_review.children(score_value).attr('checked', 'checked')
+
+            all_input_score = score_review.find('input')
+            all_label_score = score_review.find('label')
+            for (let i = 0; i < 5; i++) {
+                id = all_input_score.eq(i).attr('id')
+                all_input_score.eq(i).attr('id', id + review_id)
+                all_label_score.eq(i).attr('for', id + review_id)
+            }
+
+            comment_review = score.parent().next().clone()
+            button_review = score.parent().next().next().clone()
+            comment_text = review.children('div.comment-text').children().children().text()
+
+            review.children().children('.comment-head-score').children().replaceWith(score_review)
+            review.children('div.comment-text').replaceWith(comment_review)
+            review.children('textarea').val(comment_text)
+            $(this).replaceWith(button_review)
+        });
+    });
+</script>
+<script>
     // Отправка отзыва на сервер. При ошибке (Недостаточно символов) выдает уведомление. При успехе - перезагрузка страницы.
     $(document).ready(function () {
         $('#comment-form').submit(function () {
@@ -47,7 +79,7 @@
             } else {
                 if (amount > 0) {
                     $('#amount span').text(amount + 1)
-                    $(this).parent().prev().find("input[name='quantity']").attr('value', $(this).next().children('p').text())
+                    $(this).parent().prev().find("input[name='quantity']").attr('value', $(this).next().children('span').text())
                 }
             }
         });
@@ -57,12 +89,19 @@
             let amount = parseInt($('#amount span').text(), 10)
             if (amount > 1) {
                 $('#amount span').text(amount - 1)
-                $(this).parent().prev().find("input[name='quantity']").attr('value', $(this).prev().children('p').text())
+                $(this).parent().prev().find("input[name='quantity']").attr('value', $(this).prev().children('span').text())
             } else {
                 toastr.error("Не меньше 1 шт")
             }
         });
     });
+</script>
+<script>
+    $(document).on('click', '#comment-button', function () {
+        review = $(this).parent().parent()
+        $(this).parent().children('input[name=score]').attr('value', review.children().children('div.comment-head-score').children().children('input:checked').val())
+        $(this).parent().children('input[name=text]').attr('value', review.children('textarea').val())
+    })
 </script>
 <div class="main-block container">
     <div class="card-detail row">
@@ -181,7 +220,7 @@
         <div>
             <div id="comment-block">
                 {% for comment in comments %}
-                <div class="comment container">
+                <div class="comment container" review_id="{{ forloop.counter0 }}" comment_score="{{ comment.score }}">
                     <div class="row w-100" style="border: 1px solid #cfcfcf; border-bottom: unset;">
                         <div class="col-12 col-lg-3" style="border-bottom: 1px solid #cfcfcf;">
                             <div class="d-flex h-100 justify-content-center align-items-center"
@@ -209,6 +248,16 @@
                         </div>
                     </div>
                     {% if user == comment.user %}
+                    <form class="comment-text change-review row w-100" method="post"
+                        action="{% url 'user:change_review' product.id comment.id %}">
+                        {% csrf_token %}
+                        <input name="text" hidden>
+                        <input name="score" hidden>
+                        <button type="button" class="change-review-button" name="change"
+                            style="background-color: yellow;">
+                            Изменить отзыв
+                        </button>
+                    </form>
                     <form class="comment-text row w-100" method="post"
                         action="{% url 'user:delete_review' product.id comment.id %}">
                         {% csrf_token %}

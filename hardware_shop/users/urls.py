@@ -24,9 +24,17 @@ urlpatterns = [
         'review/<int:product_id>/', views.review, name='review'
     ),
     path(
-        'review/<int:product_id>/<int:comment_id>/',
+        'delete_review/<int:product_id>/<int:comment_id>/',
         views.delete_review,
         name='delete_review'
+    ),
+    path(
+        'change_review/<int:product_id>/<int:review_id>/',
+        views.change_review,
+        name='change_review'
+    ),
+    path(
+        'logout', views.logout, name='logout'
     ),
 ]
 

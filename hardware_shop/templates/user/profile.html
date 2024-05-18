@@ -53,9 +53,14 @@
             </div>
         </div>
         <div>
-            <button type="submit" class="button-profile">
+            <button type="submit" class="button-profile mb-3">
                 <p>Сохранить</p>
             </button>
+            <a class="button-profile" href="{% url 'user:logout' %}" style="display: flex; background-color: white">
+                <p>
+                    Выйти из аккаунта
+                </p>
+            </a>
         </div>
     </div>
 </form>

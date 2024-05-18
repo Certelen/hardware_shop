@@ -41,6 +41,12 @@ def login(request):
 
 
 @login_required
+def logout(request):
+    auth.logout(request)
+    return redirect('products:index')
+
+
+@login_required
 def profile(request):
     if request.method == "POST":
         form = UpdateUserForm(
@@ -251,3 +257,25 @@ def delete_review(request, product_id, comment_id):
         product.save()
         return redirect('products:product', product_id=product_id)
     return redirect('products:product product_id', product_id=product_id)
+
+
+@login_required
+def change_review(request, product_id, review_id):
+    product = get_object_or_404(Product, id=product_id)
+    review = Review.objects.filter(id=review_id)
+    if request.method == 'POST' and review:
+        data = request.POST
+        score = int(data['score'])
+        if 0 >= score > 5:
+            score = 5
+        review.update(
+            comment=data['text'],
+            score=score
+        )
+        score_list = [review.score for review in product.review.all()]
+        if score_list:
+            product.score = sum(score_list) / len(score_list)
+        else:
+            product.score = 0
+        product.save()
+    return redirect('products:product', product_id=product_id)
