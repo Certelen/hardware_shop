@@ -107,18 +107,14 @@
     <div class="card-detail row">
         <div class="images col-12 col-lg-6 mb-3">
             <div class="main_image" style="overflow: hidden;">
-                {% thumbnail images|first "428x572" crop="center" upscale=True as product_image_main %}
-                <img id="main_image" src="{{ product_image_main.url }}" />
-                {% endthumbnail %}
+                <img id="main_image" src="{{ product.main_image.url }}" />
             </div>
             <div class="thumbnails">
                 {% with images|chunk_list:5 as chunks %}
                 {% for chunk in chunks %}
                 <div>
                     {% for obj in chunk %}
-                    {% thumbnail obj "428x572" crop="center" upscale=True as product_image %}
-                    <img src="{{ product_image.url }}" />
-                    {% endthumbnail %}
+                    <img src="{{ obj.url }}" />
                     {% endfor %}
                 </div>
                 {% endfor %}

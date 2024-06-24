@@ -66,7 +66,7 @@
                             {% for name_key, checked in filter_value.items %}
                             <div class="form-check">
                                 <input class="form-check-input p-0" type="checkbox" id="{{filter_name}}-{{name_key}}"
-                                    name="filters" value="{{filter_name}}, {{name_key}}" blank blank blank blank blank
+                                    name="filters" value="{{filter_name}}; {{name_key}}" blank blank blank blank blank
                                     {% if checked %} checked {% endif %}>
                                 <label class="form-check-label" for="{{filter_name}}-{{name_key}}">
                                     {{ name_key }}

@@ -228,7 +228,7 @@ def category(request, category_id, sort='popular', select_page=1):
                 }
             if filters_data:
                 for filter_value in filters_data:
-                    char_name, char_value = filter_value.split(', ')
+                    char_name, char_value = filter_value.split('; ')
                     products = products.filter(
                         char__characteristic_name=char_name
                     )
